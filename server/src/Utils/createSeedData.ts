@@ -7,6 +7,9 @@ const userData: IUser = {
   name: 'Layla',
   email: 'layla@gmail.com',
   password: 'ILoveBean',
+  friends: [],
+  tripDiaryId: '',
+  locations: [],
   _id: ''
 }
 

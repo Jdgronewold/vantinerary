@@ -43,7 +43,7 @@ class AuthController {
             else {
                 try {
                     const hashedPassword = yield bcrypt.hash(userData.password, 10);
-                    const user = yield this.user.create(Object.assign({}, userData, { password: hashedPassword, _id: new mongoose_1.default.Types.ObjectId() }));
+                    const user = yield this.user.create(Object.assign({}, userData, { password: hashedPassword, friends: [], locations: [], tripDiaryId: '', _id: new mongoose_1.default.Types.ObjectId() }));
                     const tokenData = this.createToken(user);
                     response.send({ data: { key: tokenData.token } });
                 }

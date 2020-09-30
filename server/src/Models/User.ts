@@ -5,6 +5,9 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   password: String,
+  friends: [String],
+  locations: [String],
+  tripDiaryId: String,
   _id: String
 });
  

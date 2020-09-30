@@ -8,6 +8,9 @@ const userSchema = new mongoose_1.default.Schema({
     name: String,
     email: String,
     password: String,
+    friends: [String],
+    locations: [String],
+    tripDiaryId: String,
     _id: String
 });
 exports.userModel = mongoose_1.default.model('User', userSchema);

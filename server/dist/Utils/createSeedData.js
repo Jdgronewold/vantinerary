@@ -25,6 +25,9 @@ const userData = {
     name: 'Layla',
     email: 'layla@gmail.com',
     password: 'ILoveBean',
+    friends: [],
+    tripDiaryId: '',
+    locations: [],
     _id: ''
 };
 let userID;

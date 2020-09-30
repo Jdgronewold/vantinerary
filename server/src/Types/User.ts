@@ -4,6 +4,9 @@ export interface IUser {
     name: string;
     email: string;
     password: string;
+    friends: string[];
+    locations: string[];
+    tripDiaryId: string;
     _id: string;
 }
 

@@ -1,30 +1,30 @@
 version: '3'
 services:
-  # mongo:
-  #   image: mongo:latest
-  #   ports:
-  #     - "27017:27017"
-  # nginx:
-  #   restart: always
-  #   build:
-  #     dockerfile: Dockerfile.dev
-  #     context: ./nginx
-  #   ports:
-  #     - '3050:80'
-  # api:
-  #   build:
-  #     dockerfile: Dockerfile.dev
-  #     context: ./server
-  #   volumes:
-  #     - /app/node_modules
-  #     - ./server:/app
-  #   environment:
-  #     - NODE_ENV=development
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - NODE_ENV=development
   client:
     build:
       dockerfile: Dockerfile.dev
       context: ./client
     volumes:
-      - ./client:/app
       - /app/node_modules
+      - ./client:/app
     stdin_open: true

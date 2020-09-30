@@ -39,6 +39,9 @@ export class AuthController implements IController {
                 const user = await this.user.create({
                     ...userData,
                     password: hashedPassword,
+                    friends: [],
+                    locations: [],
+                    tripDiaryId: '',
                     _id: new mongoose.Types.ObjectId()
                 });
 
