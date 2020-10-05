@@ -45,7 +45,8 @@ class AuthController {
                     const hashedPassword = yield bcrypt.hash(userData.password, 10);
                     const user = yield this.user.create(Object.assign({}, userData, { password: hashedPassword, friends: [], locations: [], tripDiaryId: '', _id: new mongoose_1.default.Types.ObjectId() }));
                     const tokenData = this.createToken(user);
-                    response.send({ data: { key: tokenData.token } });
+                    console.log(tokenData);
+                    response.send(tokenData);
                 }
                 catch (error) {
                     next(error);
@@ -59,7 +60,7 @@ class AuthController {
                 const isPasswordMatching = yield bcrypt.compare(logInData.password, user.password);
                 if (isPasswordMatching) {
                     const tokenData = this.createToken(user);
-                    response.send({ data: { key: tokenData.token } });
+                    response.send(tokenData);
                 }
                 else {
                     next(new Middleware_1.WrongCredentialsException());

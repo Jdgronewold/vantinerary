@@ -1,5 +1,5 @@
 import { BaseAction } from './generalActions'
-import { IUser } from '../../../server/src/Types';
+import { IUser } from '../state/userState'
 
 export enum UserActionTypes {
   USER_LOGIN = "USER_LOGIN",

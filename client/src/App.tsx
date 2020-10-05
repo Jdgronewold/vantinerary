@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Header } from './components/header/header';
-import { UserProvider } from './components/context/userState'
-import './App.css';
+import { UserProvider } from './state/userState'
+import { Login } from './components/login/login'
+import './App.scss';
 
 function App() {
   return (
@@ -10,9 +11,9 @@ function App() {
       <UserProvider>
         <Header />
         <BrowserRouter>
-          <div>
-            
-          </div>
+          <Switch>
+            <Route exact path="/login" component={Login} />
+          </Switch>
         </BrowserRouter>
       </UserProvider>
     </div>

@@ -45,8 +45,10 @@ export class AuthController implements IController {
                     _id: new mongoose.Types.ObjectId()
                 });
 
-                const tokenData = this.createToken(user);    
-                response.send({ data: { key: tokenData.token }});
+                const tokenData = this.createToken(user);
+                console.log(tokenData);
+                  
+                response.send(tokenData );
             } catch (error) {
                 next(error)
             }
@@ -60,7 +62,7 @@ export class AuthController implements IController {
           const isPasswordMatching = await bcrypt.compare(logInData.password, user.password);
           if (isPasswordMatching) {
             const tokenData = this.createToken(user);
-            response.send({ data: { key: tokenData.token }});
+            response.send(tokenData);
           } else {
             next(new WrongCredentialsException());
           }
@@ -83,7 +85,7 @@ export class AuthController implements IController {
         ]
     }
 
-    private createToken(user: IUser) {
+    private createToken(user: IUser): ITokenData {
         const expiresIn = 60 * 60; // an hour
         const secret = process.env.JWT_SECRET!;
         const dataStoredInToken: IDataStoredInToken = {
