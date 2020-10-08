@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Header = () => {
   const classes = useStyles();
   const { user } = useContext(UserContext)
-
+  console.log(user);
+  
   return (
     <div>
       <AppBar position="static">

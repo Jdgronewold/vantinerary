@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import AirportShuttle from '@material-ui/icons/LockOutlined';
+import AirportShuttleOutlinedIcon from '@material-ui/icons/AirportShuttleOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointer'
     }
   },
+  error: {
+    color: 'red'
+  }
 }));
 
 interface RegisterData {
@@ -49,20 +52,29 @@ interface RegisterData {
 export function Login(props: RouteComponentProps) {
   console.log(props)
   const classes = useStyles();
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, errors } = useForm()
   const { userDispatch } = useContext(UserContext)
   const [isRegistering, setRegistering] = useState<boolean>(true)
+  const [generalError, setGeneralError] = useState<string>('')
 
   const onRegister = ({ name, email, password}: RegisterData) => {
     if (isRegistering) {
-      handleRegister(name, email, password).then((data: SuccessLogin) => {
-        userDispatch(loginUser(data.user))
-        props.history.push('/home')
-      })
+      handleRegister(name, email, password)
+        .then((data: SuccessLogin) => {
+          props.history.push('/home')
+          userDispatch(loginUser(data.user))
+        })
+        .catch((error) => {
+          console.log(error.response);
+          
+          if (error.response) {
+            setGeneralError(error.response.data)
+          }
+        })
     } else {
       handleLogin(email, password).then((data: SuccessLogin) => {
-        userDispatch(loginUser(data.user))
         props.history.push('/home')
+        userDispatch(loginUser(data.user))
       })
     }
   }
@@ -72,7 +84,7 @@ export function Login(props: RouteComponentProps) {
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <AirportShuttle />
+          <AirportShuttleOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign up
@@ -105,6 +117,7 @@ export function Login(props: RouteComponentProps) {
                 inputRef={register}
                 name="email"
                 autoComplete="email"
+                helperText={errors.email && isRegistering}
               />
             </Grid>
             <Grid item xs={12}>
@@ -121,6 +134,9 @@ export function Login(props: RouteComponentProps) {
               />
             </Grid>
           </Grid>
+          <div className={classes.error}>
+            { generalError }
+          </div>
           <Button
             type="submit"
             fullWidth

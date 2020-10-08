@@ -48,10 +48,7 @@ function errorMiddleware(error, request, response, next) {
     const message = error.message || 'Something went wrong';
     response
         .status(status)
-        .send({
-        status,
-        message,
-    });
+        .send(message);
 }
 exports.errorMiddleware = errorMiddleware;
 //# sourceMappingURL=errorHandling.js.map

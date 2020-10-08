@@ -53,8 +53,5 @@ export function errorMiddleware(error: HttpException, request: Request, response
     const message = error.message || 'Something went wrong';
     response
       .status(status)
-      .send({
-        status,
-        message,
-      })
+      .send(message)
   }

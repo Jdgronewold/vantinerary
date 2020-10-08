@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useState, useEffect } from 'react'
 
 import { UserActions, UserActionTypes } from '../actions/userActions'
 import { getTokenAndUser } from '../utils/userUtils'
@@ -51,8 +51,17 @@ function userReducer(state: UserState, action: UserActions): UserState {
 
 export const UserProvider: React.FunctionComponent = ({ children }) => {
   const [ { user }, userDispatch] = useReducer(userReducer, { user: getTokenAndUser().user })
+  const [contextValue, setContext] = useState<UserContextType>({ user, userDispatch })
+
+  useEffect(() => {
+    setContext((contextValue: UserContextType) => ({
+      ...contextValue,
+      ...user
+    }))
+  }, [user])
+  
   return (
-    <UserContext.Provider value={{ user, userDispatch}}>
+    <UserContext.Provider value={contextValue}>
       { children }
     </UserContext.Provider>
   )
