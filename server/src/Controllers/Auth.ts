@@ -47,8 +47,7 @@ export class AuthController implements IController {
 
                 const tokenData = this.createToken(user);
                 console.log(tokenData);
-                  
-                response.send(tokenData );
+                response.send({ tokenData, user: { ...user, password: '' } });
             } catch (error) {
                 next(error)
             }
@@ -62,7 +61,7 @@ export class AuthController implements IController {
           const isPasswordMatching = await bcrypt.compare(logInData.password, user.password);
           if (isPasswordMatching) {
             const tokenData = this.createToken(user);
-            response.send(tokenData);
+            response.send({ tokenData, user: { ...user, password: '' }});
           } else {
             next(new WrongCredentialsException());
           }

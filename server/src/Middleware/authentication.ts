@@ -7,7 +7,7 @@ import { userModel } from '../Models'
 
 
 export async function authMiddleware(request: IRequestWithUser, response: Response, next: NextFunction) {
-  const token = request.headers.authorization;  
+  const token = request.headers["x-access-token"] as string;  
   if (token) {
     const secret: string = process.env.JWT_SECRET!;
     try {

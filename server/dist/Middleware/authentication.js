@@ -16,7 +16,7 @@ const errorHandling_1 = require("./errorHandling");
 const Models_1 = require("../Models");
 function authMiddleware(request, response, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const token = request.headers.authorization;
+        const token = request.headers["x-access-token"];
         if (token) {
             const secret = process.env.JWT_SECRET;
             try {

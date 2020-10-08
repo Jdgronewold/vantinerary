@@ -1,6 +1,7 @@
 import React, { useReducer } from 'react'
 
 import { UserActions, UserActionTypes } from '../actions/userActions'
+import { getTokenAndUser } from '../utils/userUtils'
 
 export interface IUser {
   name: string;
@@ -49,7 +50,7 @@ function userReducer(state: UserState, action: UserActions): UserState {
 }
 
 export const UserProvider: React.FunctionComponent = ({ children }) => {
-  const [ { user }, userDispatch] = useReducer(userReducer, { user: defaultUser })
+  const [ { user }, userDispatch] = useReducer(userReducer, { user: getTokenAndUser().user })
   return (
     <UserContext.Provider value={{ user, userDispatch}}>
       { children }
