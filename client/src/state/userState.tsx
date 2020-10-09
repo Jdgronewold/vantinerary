@@ -56,10 +56,10 @@ export const UserProvider: React.FunctionComponent = ({ children }) => {
   useEffect(() => {
     setContext((contextValue: UserContextType) => ({
       ...contextValue,
-      ...user
+      user
     }))
   }, [user])
-  
+
   return (
     <UserContext.Provider value={contextValue}>
       { children }

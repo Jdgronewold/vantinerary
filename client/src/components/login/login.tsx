@@ -50,7 +50,6 @@ interface RegisterData {
 }
 
 export function Login(props: RouteComponentProps) {
-  console.log(props)
   const classes = useStyles();
   const { register, handleSubmit, errors } = useForm()
   const { userDispatch } = useContext(UserContext)
@@ -58,25 +57,19 @@ export function Login(props: RouteComponentProps) {
   const [generalError, setGeneralError] = useState<string>('')
 
   const onRegister = ({ name, email, password}: RegisterData) => {
-    if (isRegistering) {
-      handleRegister(name, email, password)
-        .then((data: SuccessLogin) => {
-          props.history.push('/home')
-          userDispatch(loginUser(data.user))
-        })
-        .catch((error) => {
-          console.log(error.response);
-          
-          if (error.response) {
-            setGeneralError(error.response.data)
-          }
-        })
-    } else {
-      handleLogin(email, password).then((data: SuccessLogin) => {
-        props.history.push('/home')
-        userDispatch(loginUser(data.user))
-      })
-    }
+    setGeneralError('')
+    const submitPromise = isRegistering ? handleRegister(name, email, password) :  handleLogin(email, password)
+
+    submitPromise.then((data: SuccessLogin) => {
+      props.history.push('/home')
+      userDispatch(loginUser(data.user))
+    })
+    .catch((error) => {
+      console.log(error.response);
+      if (error.response) {
+        setGeneralError(error.response.data)
+      }
+    })
   }
 
   return (
@@ -87,7 +80,7 @@ export function Login(props: RouteComponentProps) {
           <AirportShuttleOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          { isRegistering ? 'Sign up' : 'Login' }
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit(onRegister)}>
           <Grid container spacing={2}>
@@ -133,10 +126,12 @@ export function Login(props: RouteComponentProps) {
                 autoComplete="current-password"
               />
             </Grid>
+            <Grid item xs={12}>
+              <div className={classes.error}>
+                { generalError }
+              </div>
+            </Grid>
           </Grid>
-          <div className={classes.error}>
-            { generalError }
-          </div>
           <Button
             type="submit"
             fullWidth
@@ -144,11 +139,15 @@ export function Login(props: RouteComponentProps) {
             color="primary"
             className={classes.submit}
           >
-            Sign Up
+            { isRegistering ? 'Sign up' : 'Login' }
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <div className={classes.signIn} onClick={() => setRegistering(!isRegistering)}>
+              <div className={classes.signIn} onClick={() => {
+                setGeneralError('')
+                setRegistering(!isRegistering)}
+              }
+              >
                 { isRegistering ? 
                   `Already have an account? Sign in` :
                   'Need to create an account? Register'

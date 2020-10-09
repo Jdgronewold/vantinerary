@@ -27,7 +27,7 @@ class EmailOrPasswordNotSufficient extends HttpException {
 exports.EmailOrPasswordNotSufficient = EmailOrPasswordNotSufficient;
 class WrongCredentialsException extends HttpException {
     constructor() {
-        super(401, 'Wrong credentials provided');
+        super(401, 'Incorrect email or password provided');
     }
 }
 exports.WrongCredentialsException = WrongCredentialsException;

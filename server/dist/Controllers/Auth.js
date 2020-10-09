@@ -88,8 +88,7 @@ class AuthController {
             express_validator_1.check('password').isString()
         ];
     }
-    createToken(user) {
-        const expiresIn = 60 * 60; // an hour
+    createToken(user, expiresIn = 60 * 60) {
         const secret = process.env.JWT_SECRET;
         const dataStoredInToken = {
             _id: user._id,

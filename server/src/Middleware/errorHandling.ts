@@ -31,7 +31,7 @@ export class EmailOrPasswordNotSufficient extends HttpException {
 
 export class WrongCredentialsException extends HttpException {
     constructor() {
-      super(401, 'Wrong credentials provided');
+      super(401, 'Incorrect email or password provided');
     }
 }
 

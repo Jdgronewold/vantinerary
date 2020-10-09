@@ -84,8 +84,7 @@ export class AuthController implements IController {
         ]
     }
 
-    private createToken(user: IUser): ITokenData {
-        const expiresIn = 60 * 60; // an hour
+    private createToken(user: IUser, expiresIn = 60 * 60): ITokenData {
         const secret = process.env.JWT_SECRET!;
         const dataStoredInToken: IDataStoredInToken = {
             _id: user._id,

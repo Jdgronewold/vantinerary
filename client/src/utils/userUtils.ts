@@ -23,7 +23,7 @@ export const saveTokenAndUser = ({ expiresIn, token }: TokenData, user: IUser) =
   }
 }
 
-export const clearToken = () => {
+export const clearTokenAndUser = () => {
   if (typeof localStorage !== "undefined") {
     localStorage.removeItem("auth:expires_in")
     localStorage.removeItem("auth:token")
