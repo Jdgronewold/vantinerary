@@ -18,7 +18,7 @@ export const loginUser = (user: IUser): UserLoginAction => {
 
 export interface UserLogoutAction extends BaseAction<UserActionTypes.USER_LOGOUT> {}
 
-export const logoutUser = () => {
+export const logoutUser = (): UserLogoutAction => {
   return {
     type: UserActionTypes.USER_LOGOUT
   }

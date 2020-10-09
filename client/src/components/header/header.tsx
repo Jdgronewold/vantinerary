@@ -9,6 +9,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { UserContext } from '../../state/userState'
 import { isUserLoggedIn, clearTokenAndUser } from '../../utils/userUtils'
+import { logoutUser } from '../../actions/userActions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,13 +27,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Header = () => {
   const classes = useStyles();
-  const { user } = useContext(UserContext)
+  const { user, userDispatch } = useContext(UserContext)
   const history = useHistory();
   const isLoggedIn = isUserLoggedIn(user)
 
   console.log(user);
 
   const handleLogout = () => {
+    userDispatch(logoutUser())
+    history.push('/welcome')
     clearTokenAndUser()
   }
 

@@ -53,7 +53,7 @@ export function Login(props: RouteComponentProps) {
   const classes = useStyles();
   const { register, handleSubmit, errors } = useForm()
   const { userDispatch } = useContext(UserContext)
-  const [isRegistering, setRegistering] = useState<boolean>(true)
+  const [isRegistering, setRegistering] = useState<boolean>(false)
   const [generalError, setGeneralError] = useState<string>('')
 
   const onRegister = ({ name, email, password}: RegisterData) => {
