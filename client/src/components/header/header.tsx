@@ -31,8 +31,6 @@ export const Header = () => {
   const history = useHistory();
   const isLoggedIn = isUserLoggedIn(user)
 
-  console.log(user);
-
   const handleLogout = () => {
     userDispatch(logoutUser())
     history.push('/welcome')

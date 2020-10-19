@@ -13,6 +13,8 @@ import { register as handleRegister, login as handleLogin, SuccessLogin } from '
 import { RouteComponentProps } from 'react-router-dom';
 import { UserContext } from '../../state/userState';
 import { loginUser } from '../../actions/userActions';
+import { backgroundImage } from '../../utils/styleUtils'
+import vanLoginJPG from '../../static/van_login.jpg'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -20,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    ...backgroundImage(vanLoginJPG)
   },
   avatar: {
     margin: theme.spacing(1),
@@ -34,12 +37,16 @@ const useStyles = makeStyles((theme) => ({
   },
   signIn: {
     color: 'blue',
+    fontWeight: 'bold',
+    fontSize: theme.typography.body1.fontSize,
     '&:hover': {
       cursor: 'pointer'
     }
   },
   error: {
-    color: 'red'
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: theme.typography.body1.fontSize,
   }
 }));
 
