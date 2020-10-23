@@ -38,7 +38,7 @@ export const Header = () => {
   }
 
   const handleLogin = () => {
-    history.push('login')
+    history.push('login', { from: history.location.pathname })
   }
 
   const onClick = isLoggedIn ? handleLogout : handleLogin

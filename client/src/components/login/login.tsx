@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { register as handleRegister, login as handleLogin, SuccessLogin } from '../../services/authService'
-import { RouteComponentProps } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { UserContext } from '../../state/userState';
 import { loginUser } from '../../actions/userActions';
 import { backgroundImage } from '../../utils/styleUtils'
@@ -56,8 +56,9 @@ interface RegisterData {
   password: string
 }
 
-export function Login(props: RouteComponentProps) {
+export function Login() {
   const classes = useStyles();
+  const history = useHistory();
   const { register, handleSubmit, errors } = useForm()
   const { userDispatch } = useContext(UserContext)
   const [isRegistering, setRegistering] = useState<boolean>(false)
@@ -68,8 +69,8 @@ export function Login(props: RouteComponentProps) {
     const submitPromise = isRegistering ? handleRegister(name, email, password) :  handleLogin(email, password)
 
     submitPromise.then((data: SuccessLogin) => {
-      props.history.push('/home')
       userDispatch(loginUser(data.user))
+      history.push('/home')
     })
     .catch((error) => {
       console.log(error.response);
