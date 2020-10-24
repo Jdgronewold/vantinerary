@@ -8,6 +8,7 @@ import { PrivateRoute } from './components/routes/privateRoute'
 import { ReversePrivateRoute } from './components/routes/reversePrivateRoute'
 
 import './App.scss';
+import { HomePage } from './components/home/homepage';
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
           <Switch>
             <ReversePrivateRoute exact path="/login" ><Login /></ReversePrivateRoute>
             <ReversePrivateRoute exact path={["/", "/welcome"]} ><Splash /></ReversePrivateRoute>
-            <PrivateRoute path={'/home'}> <div> </div></PrivateRoute>
+            <PrivateRoute path={'/home'}> <HomePage /> </PrivateRoute>
           </Switch>
         </BrowserRouter>
       </UserProvider>
