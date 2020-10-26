@@ -6,7 +6,7 @@ import compression from "compression";
 
 import { IController } from './Types'
 import { errorMiddleware } from './Middleware'
-import { saveMockUser, saveMockRecipes } from './Utils'
+import { saveMockUser } from './Utils'
  
 class App {
   public app: express.Application;
@@ -50,7 +50,6 @@ class App {
          
       if (process.env.NODE_ENV === 'development') {
         await saveMockUser()
-        await saveMockRecipes()
       }
       console.log('MongoDB Connected')
     })

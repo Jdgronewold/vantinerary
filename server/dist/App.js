@@ -48,7 +48,6 @@ class App {
             console.log(process.env.NODE_ENV);
             if (process.env.NODE_ENV === 'development') {
                 yield Utils_1.saveMockUser();
-                yield Utils_1.saveMockRecipes();
             }
             console.log('MongoDB Connected');
         }))

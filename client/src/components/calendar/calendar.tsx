@@ -15,7 +15,7 @@ export const VanCalendar = () => {
       defaultDate={new Date()}
       localizer={localizer}
       defaultView="month"
-      style={{ height: "100vh" }}
+      style={{ height: "100%" }}
     />
   )
 }

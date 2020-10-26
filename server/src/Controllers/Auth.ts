@@ -40,7 +40,7 @@ export class AuthController implements IController {
                     ...userData,
                     password: hashedPassword,
                     friends: [],
-                    locations: [],
+                    noteIds: [],
                     tripDiaryId: '',
                     _id: new mongoose.Types.ObjectId()
                 });

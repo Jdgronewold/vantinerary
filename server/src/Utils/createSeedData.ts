@@ -1,15 +1,15 @@
-import { IUser, IRecipe } from '../Types'
-import { userModel, recipeModel } from '../Models'
+import { IUser } from '../Types'
+import { userModel } from '../Models'
 import * as bcrypt from 'bcryptjs'
 import mongoose from 'mongoose'
 
 const userData: IUser = {
-  name: 'Layla',
-  email: 'layla@gmail.com',
-  password: 'ILoveBean',
+  name: 'Jeff',
+  email: 'jeff@gmail.com',
+  password: 'password',
   friends: [],
   tripDiaryId: '',
-  locations: [],
+  noteIds: [],
   _id: ''
 }
 
@@ -25,45 +25,3 @@ export async function saveMockUser() {
   userID = user._id
   return
 }
-
-export async function saveMockRecipes() {
-  const mockRecipes: IRecipe[] = [
-    {
-      author: "Layla",
-      authorId: userID,
-      name: "Black Bean Enchiladas",
-      ingredients: [
-        {
-          quantity: "1 can",
-          name: "black beans"
-        },
-        {
-          quantity: "10",
-          name: "tortillas"
-        }
-      ]
-    },
-    {
-      author: "Layla",
-      authorId: userID,
-      name: "Baked Falafel Wraps",
-      ingredients: [
-        {
-          quantity: "2 cups",
-          name: "dry chickpeas"
-        },
-        {
-          quantity: "1",
-          name: "yellow onion"
-        }
-      ]
-    }
-  ]
-
-  mockRecipes.forEach(async (recipe: IRecipe) => {
-    const createdRecipe = new recipeModel(recipe)
-        await createdRecipe.save()
-  })
-  return
-}
-

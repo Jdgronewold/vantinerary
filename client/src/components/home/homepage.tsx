@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => ({
       ...flexStyles({ alignItems: 'flex-start'})
     },
     mainContent: {
-      flex: 1
+      flex: 1,
+      height: '100%'
     }
   })
 ) 

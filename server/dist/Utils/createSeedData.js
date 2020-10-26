@@ -22,12 +22,12 @@ const Models_1 = require("../Models");
 const bcrypt = __importStar(require("bcryptjs"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const userData = {
-    name: 'Layla',
-    email: 'layla@gmail.com',
-    password: 'ILoveBean',
+    name: 'Jeff',
+    email: 'jeff@gmail.com',
+    password: 'password',
     friends: [],
     tripDiaryId: '',
-    locations: [],
+    noteIds: [],
     _id: ''
 };
 let userID;
@@ -40,46 +40,4 @@ function saveMockUser() {
     });
 }
 exports.saveMockUser = saveMockUser;
-function saveMockRecipes() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const mockRecipes = [
-            {
-                author: "Layla",
-                authorId: userID,
-                name: "Black Bean Enchiladas",
-                ingredients: [
-                    {
-                        quantity: "1 can",
-                        name: "black beans"
-                    },
-                    {
-                        quantity: "10",
-                        name: "tortillas"
-                    }
-                ]
-            },
-            {
-                author: "Layla",
-                authorId: userID,
-                name: "Baked Falafel Wraps",
-                ingredients: [
-                    {
-                        quantity: "2 cups",
-                        name: "dry chickpeas"
-                    },
-                    {
-                        quantity: "1",
-                        name: "yellow onion"
-                    }
-                ]
-            }
-        ];
-        mockRecipes.forEach((recipe) => __awaiter(this, void 0, void 0, function* () {
-            const createdRecipe = new Models_1.recipeModel(recipe);
-            yield createdRecipe.save();
-        }));
-        return;
-    });
-}
-exports.saveMockRecipes = saveMockRecipes;
 //# sourceMappingURL=createSeedData.js.map

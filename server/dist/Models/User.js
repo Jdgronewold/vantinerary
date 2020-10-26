@@ -9,7 +9,7 @@ const userSchema = new mongoose_1.default.Schema({
     email: String,
     password: String,
     friends: [String],
-    locations: [String],
+    noteIds: [String],
     tripDiaryId: String,
     _id: String
 });

@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   friends: [String],
-  locations: [String],
+  noteIds: [String],
   tripDiaryId: String,
   _id: String
 });
