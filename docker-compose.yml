@@ -1,9 +1,13 @@
 version: '3'
 services:
   mongo:
+    restart: always
     image: mongo:latest
     ports:
       - "27017:27017"
+    depends_on:
+      - 'api'
+      - 'client'
   nginx:
     restart: always
     build:
@@ -11,6 +15,9 @@ services:
       context: ./nginx
     ports:
       - '3050:80'
+    depends_on:
+      - 'api'
+      - 'client'
   api:
     build:
       dockerfile: Dockerfile.dev

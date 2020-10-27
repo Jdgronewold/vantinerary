@@ -18,6 +18,27 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const compression_1 = __importDefault(require("compression"));
 const Middleware_1 = require("./Middleware");
 const Utils_1 = require("./Utils");
+const options = {
+    reconnectTries: 30,
+    reconnectInterval: 500,
+    poolSize: 10,
+    // If not connected, return errors immediately rather than waiting for reconnect
+    bufferMaxEntries: 0,
+    useNewUrlParser: true
+};
+const connectWithRetry = () => {
+    console.log('MongoDB connection with retry');
+    mongoose_1.default.connect('mongodb://mongo:27017/api', options).then(() => __awaiter(this, void 0, void 0, function* () {
+        console.log('MongoDB is connected');
+        console.log(process.env.NODE_ENV);
+        if (process.env.NODE_ENV === 'development') {
+            yield Utils_1.saveMockUser();
+        }
+    })).catch(err => {
+        console.log('MongoDB connection unsuccessful, retry after 5 seconds.');
+        setTimeout(connectWithRetry, 5000);
+    });
+};
 class App {
     constructor(controllers, port) {
         this.app = express_1.default();
@@ -42,16 +63,7 @@ class App {
         this.app.use(Middleware_1.errorMiddleware);
     }
     connectToDatabase() {
-        mongoose_1.default
-            .connect('mongodb://mongo:27017/api', { useNewUrlParser: true })
-            .then(() => __awaiter(this, void 0, void 0, function* () {
-            console.log(process.env.NODE_ENV);
-            if (process.env.NODE_ENV === 'development') {
-                yield Utils_1.saveMockUser();
-            }
-            console.log('MongoDB Connected');
-        }))
-            .catch((err) => console.log(err));
+        connectWithRetry();
     }
     listen() {
         this.app.listen(this.port, () => {

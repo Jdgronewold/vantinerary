@@ -7,6 +7,29 @@ import compression from "compression";
 import { IController } from './Types'
 import { errorMiddleware } from './Middleware'
 import { saveMockUser } from './Utils'
+
+const options = {
+  reconnectTries: 30, // Retry up to 30 times
+  reconnectInterval: 500, // Reconnect every 500ms
+  poolSize: 10, // Maintain up to 10 socket connections
+  // If not connected, return errors immediately rather than waiting for reconnect
+  bufferMaxEntries: 0,
+  useNewUrlParser: true 
+}
+
+const connectWithRetry = () => {
+  console.log('MongoDB connection with retry')
+  mongoose.connect('mongodb://mongo:27017/api', options).then(async ()=>{
+    console.log('MongoDB is connected')
+    console.log(process.env.NODE_ENV);
+    if (process.env.NODE_ENV === 'development') {
+      await saveMockUser()
+    }
+  }).catch(err=>{
+    console.log('MongoDB connection unsuccessful, retry after 5 seconds.')
+    setTimeout(connectWithRetry, 5000)
+  })
+}
  
 class App {
   public app: express.Application;
@@ -40,20 +63,7 @@ class App {
   }
 
   private connectToDatabase() {
-    mongoose
-    .connect(
-      'mongodb://mongo:27017/api',
-      { useNewUrlParser: true }
-    )
-    .then(async () => {   
-      console.log(process.env.NODE_ENV);
-         
-      if (process.env.NODE_ENV === 'development') {
-        await saveMockUser()
-      }
-      console.log('MongoDB Connected')
-    })
-    .catch((err: Error) => console.log(err));
+    connectWithRetry()
   }
  
   public listen() {
