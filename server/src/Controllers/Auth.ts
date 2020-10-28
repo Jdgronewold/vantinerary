@@ -61,6 +61,8 @@ export class AuthController implements IController {
           const isPasswordMatching = await bcrypt.compare(logInData.password, user.password);
           if (isPasswordMatching) {
             const tokenData = this.createToken(user);
+            console.log('TOKEN_LOGIN', tokenData.token);
+            
             response.send({ tokenData, user: { ...user.toObject(), password: '' }});
           } else {
             next(new WrongCredentialsException());
@@ -84,7 +86,7 @@ export class AuthController implements IController {
         ]
     }
 
-    private createToken(user: IUser, expiresIn = 60 * 60): ITokenData {
+    private createToken(user: IUser, expiresIn = 60 * 60 * 60): ITokenData {
         const secret = process.env.JWT_SECRET!;
         const dataStoredInToken: IDataStoredInToken = {
             _id: user._id,

@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import mongoose from 'mongoose'
 
 export interface IUser {
     name: string;
@@ -27,6 +28,6 @@ export interface ITokenData {
 }
 
 export interface IRequestWithUser extends Request {
-  user?: IUser;
+  user?: IUser & mongoose.Document;
 }
 

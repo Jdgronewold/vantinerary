@@ -23,11 +23,25 @@ class NotesController {
                 });
             }
         };
+        this.createNote = (request, response) => {
+            const note = request.body;
+            const { user } = request;
+            if (user) {
+                note.authorId = user._id;
+                const createdNote = new Models_1.noteModel(note);
+                const notePromise = createdNote.save();
+                user.noteIds.push(createdNote._id);
+                const userPromise = user.save();
+                Promise.all([notePromise, userPromise]).then(([savedNote]) => {
+                    response.send(savedNote);
+                });
+            }
+        };
         this.intializeRoutes();
     }
     intializeRoutes() {
-        this.router.get(this.path, Middleware_1.authMiddleware, this.getAllNotes);
-        // this.router.post(this.path, authMiddleware, this.createRecipe);
+        this.router.get(`${this.path}`, Middleware_1.authMiddleware, this.getAllNotes);
+        this.router.post(`${this.path}`, Middleware_1.authMiddleware, this.createNote);
     }
 }
 exports.NotesController = NotesController;

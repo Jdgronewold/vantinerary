@@ -8,19 +8,20 @@ import { userModel } from '../Models'
 
 export async function authMiddleware(request: IRequestWithUser, response: Response, next: NextFunction) {
   const token = request.headers["x-access-token"] as string;  
+  
   if (token) {
-    const secret: string = process.env.JWT_SECRET!;
-    try {
+    const secret: string = process.env.JWT_SECRET!;    
+    try {      
       const verificationResponse = jwt.verify(token, secret) as IDataStoredInToken;
-      const id = verificationResponse._id;
-      const user = await userModel.findById(id);
+      const id = verificationResponse._id;   
+      const user = await userModel.findById(id);      
       if (user) {
         request.user = user;
         next();
       } else {
         next(new WrongAuthenticationTokenException());
       }
-    } catch (error) {
+    } catch (error) {      
       next(new WrongAuthenticationTokenException());
     }
   } else {

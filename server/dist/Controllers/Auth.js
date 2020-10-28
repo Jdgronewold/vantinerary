@@ -60,6 +60,7 @@ class AuthController {
                 const isPasswordMatching = yield bcrypt.compare(logInData.password, user.password);
                 if (isPasswordMatching) {
                     const tokenData = this.createToken(user);
+                    console.log('TOKEN_LOGIN', tokenData.token);
                     response.send({ tokenData, user: Object.assign({}, user.toObject(), { password: '' }) });
                 }
                 else {
@@ -88,7 +89,7 @@ class AuthController {
             express_validator_1.check('password').isString()
         ];
     }
-    createToken(user, expiresIn = 60 * 60) {
+    createToken(user, expiresIn = 60 * 60 * 60) {
         const secret = process.env.JWT_SECRET;
         const dataStoredInToken = {
             _id: user._id,

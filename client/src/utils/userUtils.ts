@@ -17,8 +17,8 @@ export const saveTokenAndUser = ({ expiresIn, token }: TokenData, user: IUser) =
     localStorage.setItem(
         "auth:expires_in",
         JSON.stringify(expiresIn)
-    );
-    localStorage.setItem("auth:token", JSON.stringify(token));
+    ); 
+    localStorage.setItem("auth:token", token);
     localStorage.setItem("auth:user", JSON.stringify(user))
   }
 }

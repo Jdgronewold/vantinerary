@@ -2,7 +2,6 @@ import * as express from 'express';
 import { noteModel } from '../Models'
 import { IController, INote, IRequestWithUser } from '../Types'
 import { authMiddleware } from '../Middleware'
-import { Mongoose } from 'mongoose';
 
 export class NotesController implements IController {
     public path = '/notes'
@@ -14,8 +13,8 @@ export class NotesController implements IController {
     }
 
     public intializeRoutes() {
-      this.router.get(this.path, authMiddleware, this.getAllNotes);
-      // this.router.post(this.path, authMiddleware, this.createRecipe);
+      this.router.get(`${this.path}`, authMiddleware, this.getAllNotes);
+      this.router.post(`${this.path}`, authMiddleware, this.createNote);
     }
 
     getAllNotes = (request: IRequestWithUser, response: express.Response) => {
@@ -27,14 +26,21 @@ export class NotesController implements IController {
       }
     }
 
-    // createRecipe = (request: IRequestWithUser, response: express.Response) => {
-    //   const recipe: IRecipe = request.body
-    //   if (request.user) {
-    //     recipe.authorId = request.user._id
-    //     const createdRecipe = new recipeModel(recipe)
-    //     createdRecipe.save().then((savedRecipe: IRecipe) => {
-    //         response.send(savedRecipe)
-    //     })
-    //   }
-    // }
+    createNote = (request: IRequestWithUser, response: express.Response) => {
+      const note: INote = request.body
+      const { user } = request
+      if (user) {
+        note.authorId = user._id
+        const createdNote = new noteModel(note)
+        const notePromise = createdNote.save()
+        user.noteIds.push(createdNote._id)
+        const userPromise = user.save()
+
+        
+        
+        Promise.all([notePromise, userPromise]).then(([savedNote]) => {
+            response.send(savedNote)
+        })
+      }
+    }
 }

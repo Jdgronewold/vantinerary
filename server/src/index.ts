@@ -4,13 +4,14 @@
 // 3 read node best practices in https://github.com/i0natan/nodebestpractices
 
 import App from './App';
-import { AuthController }  from './Controllers';
+import { AuthController, NotesController }  from './Controllers';
 import dotenv from 'dotenv';
  
 dotenv.config()
 const app = new App(
   [
     new AuthController(),
+    new NotesController()
   ],
   5000,
 );
