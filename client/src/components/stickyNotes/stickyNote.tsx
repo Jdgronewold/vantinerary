@@ -12,9 +12,11 @@ const useStyles = makeStyles((theme) => ({
   },
   stickyHeader: {
     height: '30px',
+    lineHeight: '30px',
+    paddingLeft: '5px',
     width: '100%',
     backgroundColor: theme.palette.secondary.main,
-    borderBottom: `1px solid ${theme.palette.secondary.main}`
+    borderBottom: `2px solid ${theme.palette.secondary.dark}`,
   },
   stickyBody: {
     backgroundColor: theme.palette.secondary.light,
@@ -31,7 +33,7 @@ export const StickyNote: React.FC<StickyNoteProps> = (props) => {
   const classes = useStyles()
 
   return (
-    <div className={classes.stickyRoot}>
+    <div className={classes.stickyRoot} onClick={props.clickAction}>
       <div className={classes.stickyHeader}>
         { props.title || props.date.toDateString() }
       </div>

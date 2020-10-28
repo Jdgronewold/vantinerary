@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'
+import { Switch } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { flexStyles } from '../../utils/styleUtils';
 import { Sidebar } from '../sidebar/sidebar'
@@ -7,6 +8,8 @@ import { NoteContext } from '../../state/notesState';
 import { getNotes } from '../../services/noteService'
 import { saveNotes } from '../../actions/notesActions';
 import { StickyNotes } from '../stickyNotes/stickyNotes'
+import { PrivateRoute } from '../routes/privateRoute';
+import { CreateNote } from '../stickyNotes/createNote'
 
 const useStyles = makeStyles((theme) => ({
     homepage: {
@@ -26,6 +29,19 @@ const useStyles = makeStyles((theme) => ({
   })
 ) 
 
+const MainPage = () => {
+  const classes = useStyles()
+
+  return (
+    <>
+      <div className={classes.calendarRoot}>
+        <VanCalendar />
+      </div>
+      <StickyNotes />
+    </>
+  )
+}
+
 export const HomePage = () => {
   const classes = useStyles()
   const { notesDispatch } = useContext(NoteContext)
@@ -43,10 +59,10 @@ export const HomePage = () => {
     <div className={classes.homepage}>
       <Sidebar />
       <div className={classes.mainContent}>
-        <div className={classes.calendarRoot}>
-          <VanCalendar />
-        </div>
-        <StickyNotes />
+        <Switch>
+          <PrivateRoute path='/home'> <MainPage /></PrivateRoute>
+          <PrivateRoute path='/home/createNote'><CreateNote/></PrivateRoute>
+        </Switch>
       </div>
     </div>
   )
