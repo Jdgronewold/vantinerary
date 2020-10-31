@@ -60,7 +60,7 @@ export const HomePage = () => {
       <Sidebar />
       <div className={classes.mainContent}>
         <Switch>
-          <PrivateRoute path='/home'> <MainPage /></PrivateRoute>
+          <PrivateRoute exact path='/home'> <MainPage /></PrivateRoute>
           <PrivateRoute path='/home/createNote'><CreateNote/></PrivateRoute>
         </Switch>
       </div>
