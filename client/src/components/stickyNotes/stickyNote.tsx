@@ -8,7 +8,9 @@ const useStyles = makeStyles((theme) => ({
     width: '200px',
     height: '200px',
     color: theme.palette.secondary.contrastText,
-    ...flexStyles({ flexDirection: 'column'})
+    margin: theme.spacing(2),
+    ...flexStyles({ flexDirection: 'column'}),
+    boxShadow: theme.shadows[6]
   },
   stickyHeader: {
     height: '30px',
@@ -22,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.light,
     flex: 1,
     width: '100%',
+    padding: theme.spacing(1)
   }
 }))
 

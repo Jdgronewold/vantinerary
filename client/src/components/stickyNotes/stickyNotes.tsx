@@ -8,9 +8,10 @@ import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   stickyNotesRoot: {
+    paddingTop: theme.spacing(3),
     height: '50%',
     width: '100%',
-    ...flexStyles({ flexDirection: 'column', alignItems: 'space-between' }),
+    ...flexStyles({ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }),
     flexWrap: 'wrap'
   },
   newNote: {
@@ -49,8 +50,8 @@ export const StickyNotes = () => {
         </div>
       </StickyNote>
       {
-        notes.map((note: INote) => (
-          <StickyNote {...note}>
+        notes.map((note: INote, index) => (
+          <StickyNote {...note} key={index}>
             { note.body }
           </StickyNote>
         ))

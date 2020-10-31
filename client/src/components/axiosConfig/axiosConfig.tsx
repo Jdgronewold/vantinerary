@@ -6,12 +6,8 @@ import { logoutUser } from '../../actions/userActions'
 
 export const AxiosConfig: React.FC = ({ children}) => {
   const { userDispatch } = useContext(UserContext)
-
-  console.log('RENDERED AXIOS');
   
   axios.interceptors.response.use(response => {
-    console.log('HELLO', response);
-    
     return response;
   }, error => {
     console.log(error.response);
@@ -25,7 +21,7 @@ export const AxiosConfig: React.FC = ({ children}) => {
   });
 
   return (
-    <div className='AXIOS'>
+    <div>
       { children }
     </div>
   )
