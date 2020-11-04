@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { flexStyles } from '../../utils/styleUtils';
 import { useForm } from "react-hook-form";
 import { saveNote } from '../../services/noteService' 
-import { createNote } from '../../utils/noteUtils'
+import { createNote, formatDate } from '../../utils/noteUtils'
 import { useHistory } from 'react-router-dom'
 import { saveNote as saveNoteAction } from '../../actions/notesActions'
 import { INote, NoteContext } from '../../state/notesState'
@@ -13,7 +13,6 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   createNote: {
@@ -84,7 +83,7 @@ export const CreateNote = () => {
                 variant="outlined"
                 inputRef={register}
                 name="date"
-                defaultValue={moment().format('YYYY-MM-DD')}
+                defaultValue={formatDate(new Date())}
                 type="date"
                 id="date"
               />

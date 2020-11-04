@@ -1,4 +1,5 @@
 import { INote } from '../state/notesState'
+import moment from 'moment'
 
 const defaultNote = {
   body: '',
@@ -11,4 +12,8 @@ export const createNote = (noteData: Partial<INote> ): INote => {
     ...defaultNote,
     ...noteData
   }
+}
+
+export const formatDate = (date: Date): string => {
+  return moment(date).format('MM-DD-YYYY')
 }

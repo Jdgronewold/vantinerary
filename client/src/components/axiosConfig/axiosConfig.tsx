@@ -11,7 +11,6 @@ export const AxiosConfig: React.FC = ({ children}) => {
     return response;
   }, error => {
     console.log(error.response);
-    debugger
     if (error.response.status === 401) {
       userDispatch(logoutUser())
       clearTokenAndUser()

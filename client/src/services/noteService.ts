@@ -7,12 +7,18 @@ const BASE_NOTES_PATH = 'api/notes'
 
 export const getNotes = () => {
   return axios.get(BASE_NOTES_PATH, { headers: getAuthHeader() }).then((response: AxiosResponse<INote[]>) => {
-    return response.data
+    return response.data.map((note: INote) => ({
+      ...note,
+      date: new Date(note.date)
+    }))
   })
 }
 
 export const saveNote = (note: INote) => {
   return axios.post(BASE_NOTES_PATH, note, { headers: getAuthHeader() }).then((response : AxiosResponse<INote>) => {
-    return response.data
+    return {
+      ...response.data,
+      date: new Date(response.data.date)
+    }
   })
 }

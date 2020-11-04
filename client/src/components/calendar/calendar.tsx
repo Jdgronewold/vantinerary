@@ -2,8 +2,10 @@ import React, { useContext, useMemo } from 'react'
 import { Calendar, momentLocalizer, Event } from 'react-big-calendar'
 import moment from 'moment'
 import { INote, NoteContext } from '../../state'
+import { calendarEvent, eventStyleGetter } from './event'
 
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import { formatDate } from '../../utils/noteUtils'
 
 const localizer = momentLocalizer(moment)
 
@@ -14,7 +16,7 @@ export const VanCalendar = () => {
     return notes.map((note: INote): Event => ({
       start: note.date,
       end: note.date,
-      title: note.title || note.date.toISOString(),
+      title: note.title || formatDate(note.date),
       allDay: true,
       resource: note
     }))
@@ -30,6 +32,10 @@ export const VanCalendar = () => {
       localizer={localizer}
       defaultView="month"
       style={{ height: "100%" }}
+      eventPropGetter={eventStyleGetter}
+      components={{
+        event: calendarEvent
+      }}
     />
   )
 }
