@@ -11,7 +11,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.contrastText,
     margin: theme.spacing(2),
     ...flexStyles({ flexDirection: 'column'}),
-    boxShadow: theme.shadows[6]
+    boxShadow: theme.shadows[6],
+    '&:hover': {
+      cursor: 'pointer'
+    }
   },
   stickyHeader: {
     height: '30px',

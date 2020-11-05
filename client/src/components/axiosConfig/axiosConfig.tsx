@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useContext } from 'react'
 import { UserContext } from '../../state/userState'
 import axios from 'axios'
 import { clearTokenAndUser } from '../../utils/userUtils'

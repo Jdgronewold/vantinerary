@@ -10,6 +10,7 @@ import { saveNotes } from '../../actions/notesActions';
 import { StickyNotes } from '../stickyNotes/stickyNotes'
 import { PrivateRoute } from '../routes/privateRoute';
 import { CreateNote } from '../stickyNotes/createNote'
+import { DisplayNote } from '../stickyNotes/displayNote';
 
 const useStyles = makeStyles((theme) => ({
     homepage: {
@@ -40,7 +41,7 @@ const MainPage = () => {
       </div>
       {
         currentNote ?
-        <div> Hello! </div> :
+        <DisplayNote /> :
         <StickyNotes />
       }
     </>

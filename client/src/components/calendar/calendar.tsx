@@ -6,11 +6,12 @@ import { calendarEvent, eventStyleGetter } from './event'
 
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { formatDate } from '../../utils/noteUtils'
+import { selectNote } from '../../actions/notesActions'
 
 const localizer = momentLocalizer(moment)
 
 export const VanCalendar = () => {
-  const { notes } = useContext(NoteContext)
+  const { notes, notesDispatch } = useContext(NoteContext)
 
   const transformNotes = (notes: INote[]): Event[] => {
     return notes.map((note: INote): Event => ({
@@ -18,10 +19,14 @@ export const VanCalendar = () => {
       end: note.date,
       title: note.title || formatDate(note.date),
       allDay: true,
-      resource: note
+      resource: { note, selectNote: () => notesDispatch(selectNote(note)) }
     }))
   }
   const memoNotes = useMemo(() => transformNotes(notes), [notes])
+
+  const onClickEvent = (event: Event) => {
+    event.resource.selectNote()
+  }
 
   return (
     <Calendar
@@ -32,6 +37,7 @@ export const VanCalendar = () => {
       localizer={localizer}
       defaultView="month"
       style={{ height: "100%" }}
+      onSelectEvent={onClickEvent}
       eventPropGetter={eventStyleGetter}
       components={{
         event: calendarEvent

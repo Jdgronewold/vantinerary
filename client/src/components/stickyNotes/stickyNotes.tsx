@@ -21,9 +21,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '18px',
     '& span': {
       padding: theme.spacing(1)
-    },
-    '&:hover': {
-      cursor: 'pointer'
     }
   }
 }))
