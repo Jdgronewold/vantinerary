@@ -31,13 +31,18 @@ const useStyles = makeStyles((theme) => ({
 
 const MainPage = () => {
   const classes = useStyles()
+  const { currentNote } = useContext(NoteContext)
 
   return (
     <>
       <div className={classes.calendarRoot}>
         <VanCalendar />
       </div>
-      <StickyNotes />
+      {
+        currentNote ?
+        <div> Hello! </div> :
+        <StickyNotes />
+      }
     </>
   )
 }

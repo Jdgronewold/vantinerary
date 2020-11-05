@@ -5,6 +5,7 @@ import { flexStyles } from '../../utils/styleUtils';
 import { StickyNote } from './stickyNote';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import { useHistory } from 'react-router-dom';
+import { selectNote } from '../../actions/notesActions';
 
 const useStyles = makeStyles((theme) => ({
   stickyNotesRoot: {
@@ -34,7 +35,7 @@ const newNote: INote = {
 
 export const StickyNotes = () => {
   const classes = useStyles()
-  const { notes } = useContext(NoteContext)
+  const { notes, notesDispatch } = useContext(NoteContext)
   const history = useHistory();
 
   const createNewNote = () => {
@@ -51,7 +52,7 @@ export const StickyNotes = () => {
       </StickyNote>
       {
         notes.map((note: INote, index) => (
-          <StickyNote {...note} key={index}>
+          <StickyNote {...note} key={index} clickAction={() => notesDispatch(selectNote(note))}>
             { note.body }
           </StickyNote>
         ))

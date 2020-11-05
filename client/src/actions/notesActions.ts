@@ -4,7 +4,8 @@ import { BaseAction } from './generalActions';
 export enum NotesActionTypes {
   SAVE_NOTES = 'SAVE_NOTES',
   SAVE_NOTE = 'SAVE_NOTE',
-  DELETE_NOTE = 'DELETE_NOTE'
+  DELETE_NOTE = 'DELETE_NOTE',
+  SELECT_NOTE = 'SELECT_NOTE'
 }
 
 export interface SaveNotesAction extends BaseAction<NotesActionTypes.SAVE_NOTES> {
@@ -40,7 +41,18 @@ export const deleteNote = (deletedNote: INote): DeleteNoteAction => {
   }
 }
 
-export type NotesActions = SaveNoteAction | SaveNotesAction | DeleteNoteAction
+export interface SelectNoteAction extends BaseAction<NotesActionTypes.SELECT_NOTE> {
+  payload: INote | null
+}
+
+export const selectNote = (selectNote: INote | null): SelectNoteAction => {
+  return {
+    type: NotesActionTypes.SELECT_NOTE,
+    payload: selectNote
+  }
+}
+
+export type NotesActions = SaveNoteAction | SaveNotesAction | DeleteNoteAction | SelectNoteAction
 
 
 

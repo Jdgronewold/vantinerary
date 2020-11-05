@@ -14,27 +14,42 @@ export interface INote {
 }
 
 export interface NotesState {
-  notes: INote[]
+  notes: INote[],
+  currentNote: INote | null
 }
 
 
-type NoteContextType = { notes: INote[], notesDispatch: React.Dispatch<NotesActions>}
+type NoteContextType = {
+  notes: INote[],
+  currentNote: INote | null,
+  notesDispatch: React.Dispatch<NotesActions>
+}
 
-export const NoteContext = React.createContext<NoteContextType>({ notes: [], notesDispatch: () => {}})
+export const NoteContext = React.createContext<NoteContextType>({
+  notes: [],
+  currentNote:  null,
+  notesDispatch: () => {}
+})
 
 function notesReducer(state: NotesState, action: NotesActions): NotesState {
   switch(action.type) {
     case NotesActionTypes.SAVE_NOTES: {
-      return { notes: action.payload }
+      return { notes: action.payload, currentNote:  null }
     }
     case NotesActionTypes.SAVE_NOTE: {
       const notes = state.notes.slice()
       notes.push(action.payload)
-      return { notes }
+      return { notes, currentNote:  null }
     }
     case NotesActionTypes.DELETE_NOTE: {
       const noteIndex = state.notes.findIndex((note: INote) => note._id = action.payload._id )
-      return { notes: state.notes.splice(noteIndex, 1) }
+      return { notes: state.notes.splice(noteIndex, 1), currentNote:  null }
+    }
+    case NotesActionTypes.SELECT_NOTE: {
+      return {
+        notes: state.notes,
+        currentNote: action.payload
+      }
     }
     default:
       return state
@@ -42,15 +57,16 @@ function notesReducer(state: NotesState, action: NotesActions): NotesState {
 }
 
 export const NotesProvider: React.FunctionComponent = ({ children }) => {
-  const [ { notes }, notesDispatch] = useReducer(notesReducer, { notes: [] })
-  const [contextValue, setContext] = useState<NoteContextType>({ notes, notesDispatch })
+  const [ { notes, currentNote }, notesDispatch] = useReducer(notesReducer, { notes: [], currentNote: null })
+  const [contextValue, setContext] = useState<NoteContextType>({ notes, notesDispatch, currentNote: null })
 
   useEffect(() => {
     setContext((contextValue: NoteContextType) => ({
       ...contextValue,
-      notes
+      notes,
+      currentNote
     }))
-  }, [notes])
+  }, [notes, currentNote])
 
   return (
     <NoteContext.Provider value={contextValue}>
