@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { Calendar, momentLocalizer, Event } from 'react-big-calendar'
+import { useHistory } from "react-router-dom";
 import moment from 'moment'
 import { INote, NoteContext } from '../../state'
 import { calendarEvent, eventStyleGetter } from './event'
@@ -10,8 +11,16 @@ import { selectNote } from '../../actions/notesActions'
 
 const localizer = momentLocalizer(moment)
 
+interface SlotInfo {
+  start: string | Date;
+  end: string | Date;
+  slots: Date[] | string[];
+  action: 'select' | 'click' | 'doubleClick';
+}
+
 export const VanCalendar = () => {
   const { notes, notesDispatch } = useContext(NoteContext)
+  const history = useHistory()
 
   const transformNotes = (notes: INote[]): Event[] => {
     return notes.map((note: INote): Event => ({
@@ -28,11 +37,17 @@ export const VanCalendar = () => {
     event.resource.selectNote()
   }
 
+  const onClickDate = (slotInfo: SlotInfo) => {
+    history.push('/home/createNote', { date: slotInfo.start} )
+  }
+
   return (
     <Calendar
       events={memoNotes}
       step={60}
       showMultiDayTimes
+      selectable
+      onSelectSlot={onClickDate}
       defaultDate={new Date()}
       localizer={localizer}
       defaultView="month"

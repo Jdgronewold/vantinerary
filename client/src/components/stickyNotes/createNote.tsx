@@ -4,15 +4,17 @@ import { flexStyles } from '../../utils/styleUtils';
 import { useForm } from "react-hook-form";
 import { saveNote } from '../../services/noteService' 
 import { createNote, formatDate } from '../../utils/noteUtils'
-import { useHistory } from 'react-router-dom'
+import { useHistory, RouteProps } from 'react-router-dom'
 import { saveNote as saveNoteAction } from '../../actions/notesActions'
 import { INote, NoteContext } from '../../state/notesState'
+import { Location } from 'history';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   createNote: {
@@ -40,7 +42,9 @@ interface NoteData {
   showOnCalendar: boolean
 }
 
-export const CreateNote = () => {
+interface HistoryState { date : Date } 
+
+export const CreateNote: React.FC<RouteProps> = (props) => {
   const classes = useStyles()
   const { register, handleSubmit } = useForm()
   const history = useHistory()
@@ -59,7 +63,9 @@ export const CreateNote = () => {
     })
   }
 
-
+  const location = history.location as Location<HistoryState>
+  const defaultDate = location.state?.date ? new Date(location.state.date) : new Date()  
+  
   return (
     <div className={classes.createNote}>
       <Typography component="h2" variant="h4">
@@ -83,7 +89,7 @@ export const CreateNote = () => {
                 variant="outlined"
                 inputRef={register}
                 name="date"
-                defaultValue={formatDate(new Date())}
+                defaultValue={moment(defaultDate).format('YYYY-MM-DD')}
                 type="date"
                 id="date"
               />
