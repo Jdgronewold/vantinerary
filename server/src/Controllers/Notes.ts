@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { noteModel } from '../Models'
 import { IController, INote, IRequestWithUser } from '../Types'
-import { authMiddleware, DeleteNoteUnsuccessfulException } from '../Middleware'
+import { authMiddleware, DeleteNoteUnsuccessfulException, EditNoteUnsuccessfulException } from '../Middleware'
 
 export class NotesController implements IController {
     public path = '/notes'
@@ -46,11 +46,12 @@ export class NotesController implements IController {
       }
     }
 
-    editNote = (request: IRequestWithUser, response: express.Response) => {
+    editNote = (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
       const noteFromRequest: INote = request.body
       const { user } = request
       if (user) {
         noteModel.findById(noteFromRequest._id, (err, note) => {
+          
           if (note) {
             note.body = noteFromRequest.body
             note.date = noteFromRequest.date
@@ -58,9 +59,12 @@ export class NotesController implements IController {
             note.showOnCalendar = noteFromRequest.showOnCalendar
             note.save()
             response.send(note)
+          } else {
+            next(new EditNoteUnsuccessfulException())
           }
-
         })
+      } else {
+        next(new EditNoteUnsuccessfulException())
       }
     }
 

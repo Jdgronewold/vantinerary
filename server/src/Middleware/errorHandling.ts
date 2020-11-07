@@ -53,6 +53,12 @@ export class DeleteNoteUnsuccessfulException extends HttpException {
   }
 }
 
+export class EditNoteUnsuccessfulException extends HttpException {
+  constructor() {
+    super(400, 'Note edit was not successful')
+  }
+}
+
 
 export function errorMiddleware(error: HttpException, request: Request, response: Response, next: NextFunction) {
     const status = error.status || 500;

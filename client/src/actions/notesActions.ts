@@ -5,7 +5,8 @@ export enum NotesActionTypes {
   SAVE_NOTES = 'SAVE_NOTES',
   SAVE_NOTE = 'SAVE_NOTE',
   DELETE_NOTE = 'DELETE_NOTE',
-  SELECT_NOTE = 'SELECT_NOTE'
+  SELECT_NOTE = 'SELECT_NOTE',
+  EDIT_NOTE = 'EDIT_NOTE'
 }
 
 export interface SaveNotesAction extends BaseAction<NotesActionTypes.SAVE_NOTES> {
@@ -26,6 +27,17 @@ export interface SaveNoteAction extends BaseAction<NotesActionTypes.SAVE_NOTE> {
 export const saveNote = (note: INote): SaveNoteAction => {
   return {
     type: NotesActionTypes.SAVE_NOTE,
+    payload: note
+  }
+}
+
+export interface EditNoteAction extends BaseAction<NotesActionTypes.EDIT_NOTE> {
+  payload: INote
+}
+
+export const editNote = (note: INote): EditNoteAction => {
+  return {
+    type: NotesActionTypes.EDIT_NOTE,
     payload: note
   }
 }
@@ -52,7 +64,7 @@ export const selectNote = (selectNote: INote | null): SelectNoteAction => {
   }
 }
 
-export type NotesActions = SaveNoteAction | SaveNotesAction | DeleteNoteAction | SelectNoteAction
+export type NotesActions = SaveNoteAction | SaveNotesAction | DeleteNoteAction | SelectNoteAction | EditNoteAction
 
 
 

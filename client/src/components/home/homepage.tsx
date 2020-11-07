@@ -10,6 +10,7 @@ import { saveNotes } from '../../actions/notesActions';
 import { StickyNotes } from '../stickyNotes/stickyNotes'
 import { PrivateRoute } from '../routes/privateRoute';
 import { CreateNote } from '../stickyNotes/createNote'
+import { EditNote } from '../stickyNotes/editNote'
 import { DisplayNote } from '../stickyNotes/displayNote';
 
 const useStyles = makeStyles((theme) => ({
@@ -68,6 +69,7 @@ export const HomePage = () => {
         <Switch>
           <PrivateRoute exact path='/home'> <MainPage /></PrivateRoute>
           <PrivateRoute path='/home/createNote'><CreateNote/></PrivateRoute>
+          <PrivateRoute path='/home/editNote'><EditNote/></PrivateRoute>
         </Switch>
       </div>
     </div>

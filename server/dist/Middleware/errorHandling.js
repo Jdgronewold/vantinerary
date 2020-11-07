@@ -49,6 +49,12 @@ class DeleteNoteUnsuccessfulException extends HttpException {
     }
 }
 exports.DeleteNoteUnsuccessfulException = DeleteNoteUnsuccessfulException;
+class EditNoteUnsuccessfulException extends HttpException {
+    constructor() {
+        super(400, 'Note edit was not successful');
+    }
+}
+exports.EditNoteUnsuccessfulException = EditNoteUnsuccessfulException;
 function errorMiddleware(error, request, response, next) {
     const status = error.status || 500;
     const message = error.message || 'Something went wrong';

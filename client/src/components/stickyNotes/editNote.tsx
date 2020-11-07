@@ -2,10 +2,10 @@ import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { flexStyles } from '../../utils/styleUtils';
 import { useForm } from "react-hook-form";
-import { saveNote } from '../../services/noteService' 
+import { editNote } from '../../services/noteService' 
 import { createNote } from '../../utils/noteUtils'
 import { useHistory, RouteProps } from 'react-router-dom'
-import { saveNote as saveNoteAction } from '../../actions/notesActions'
+import { editNote as editNoteAction } from '../../actions/notesActions'
 import { INote, NoteContext } from '../../state/notesState'
 import { Location } from 'history';
 import Typography from '@material-ui/core/Typography';
@@ -44,24 +44,29 @@ interface NoteData {
 
 interface HistoryState { date : Date } 
 
-export const CreateNote: React.FC<RouteProps> = (props) => {
+export const EditNote: React.FC<RouteProps> = (props) => {
   const classes = useStyles()
   const { register, handleSubmit } = useForm()
   const history = useHistory()
-  const { notesDispatch } = useContext(NoteContext)
+  const { currentNote, notesDispatch } = useContext(NoteContext)
+
+  if (!currentNote) {
+    history.push('/home')
+    return null
+  }
   
-  const location = history.location as Location<HistoryState>
-  const defaultDate = location.state?.date ? new Date(location.state.date) : new Date()  
+  const defaultDate = currentNote.date || null
 
   const saveForm = (noteData: NoteData) => {
-  
+    const newDate = new Date(noteData.date)
     const note = createNote({
+      ...currentNote,
       ...noteData,
-      date: defaultDate,
+      date: newDate,
     })
 
-    saveNote(note).then((value: INote) => {
-      notesDispatch(saveNoteAction(value))
+    editNote(note).then((value: INote) => {
+      notesDispatch(editNoteAction(value))
       history.push('/home')
     })
   }
@@ -69,7 +74,7 @@ export const CreateNote: React.FC<RouteProps> = (props) => {
   return (
     <div className={classes.createNote}>
       <Typography component="h2" variant="h4">
-          Create A Note
+          Edit Note
         </Typography>
       <form onSubmit={handleSubmit(saveForm)} className={classes.createNoteForm}>
         <Grid container spacing={2}>
@@ -81,6 +86,7 @@ export const CreateNote: React.FC<RouteProps> = (props) => {
               label="Title (optional)"
               inputRef={register}
               name="title"
+              defaultValue={currentNote.title}
             />
           </Grid>
           <Grid container className={classes.dateForm}>
@@ -98,7 +104,7 @@ export const CreateNote: React.FC<RouteProps> = (props) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    defaultChecked={true}
+                    defaultChecked={currentNote.showOnCalendar}
                     inputRef={register}
                     name="showOnCalendar"
                     color="primary"
@@ -119,6 +125,7 @@ export const CreateNote: React.FC<RouteProps> = (props) => {
               id="body"
               rows={15}
               multiline
+              defaultValue={currentNote.body}
             />
           </Grid>
         </Grid>
@@ -129,7 +136,7 @@ export const CreateNote: React.FC<RouteProps> = (props) => {
           color="primary"
           className={classes.submit}
         >
-          Create Note
+          Edit Note
         </Button>
       </form>
     </div>

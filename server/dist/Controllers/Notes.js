@@ -37,7 +37,7 @@ class NotesController {
                 });
             }
         };
-        this.editNote = (request, response) => {
+        this.editNote = (request, response, next) => {
             const noteFromRequest = request.body;
             const { user } = request;
             if (user) {
@@ -50,7 +50,13 @@ class NotesController {
                         note.save();
                         response.send(note);
                     }
+                    else {
+                        next(new Middleware_1.EditNoteUnsuccessfulException());
+                    }
                 });
+            }
+            else {
+                next(new Middleware_1.EditNoteUnsuccessfulException());
             }
         };
         this.deleteNote = (request, response, next) => {

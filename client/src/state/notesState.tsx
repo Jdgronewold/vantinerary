@@ -53,6 +53,12 @@ function notesReducer(state: NotesState, action: NotesActions): NotesState {
         currentNote: action.payload
       }
     }
+    case NotesActionTypes.EDIT_NOTE: {
+      const noteIndex = state.notes.findIndex((note: INote) => note._id = action.payload._id )
+      const newNotes = state.notes.slice()
+      newNotes.splice(noteIndex, 1, action.payload)
+      return { notes: newNotes, currentNote:  action.payload }
+    }
     default:
       return state
   }

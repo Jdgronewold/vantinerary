@@ -23,6 +23,15 @@ export const saveNote = (note: INote) => {
   })
 }
 
+export const editNote = (note: INote) => {
+  return axios.put(BASE_NOTES_PATH, note, { headers: getAuthHeader() }).then((response : AxiosResponse<INote>) => {
+    return {
+      ...response.data,
+      date: new Date(response.data.date)
+    }
+  })
+}
+
 export const deleteNote = (noteID: string) => {
 
   return axios({
