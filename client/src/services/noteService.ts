@@ -22,3 +22,15 @@ export const saveNote = (note: INote) => {
     }
   })
 }
+
+export const deleteNote = (noteID: string) => {
+
+  return axios({
+    url: BASE_NOTES_PATH,
+    method: 'DELETE',
+    headers: getAuthHeader(),
+    data: { id: noteID}
+  })
+  .then((response: AxiosResponse<INote>) => {
+  })
+}

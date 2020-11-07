@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { noteModel } from '../Models'
 import { IController, INote, IRequestWithUser } from '../Types'
-import { authMiddleware } from '../Middleware'
+import { authMiddleware, DeleteNoteUnsuccessfulException } from '../Middleware'
 
 export class NotesController implements IController {
     public path = '/notes'
@@ -64,20 +64,30 @@ export class NotesController implements IController {
       }
     }
 
-    deleteNote = (request: IRequestWithUser, response: express.Response) => {
-      const noteFromRequest: INote = request.body
+    deleteNote = (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
+      const noteIDFromRequest: string = request.body.id
       const { user } = request
+      console.log(noteIDFromRequest)
+      
       if (user) {
-        noteModel.findById(noteFromRequest._id, (err, note) => {
+        noteModel.findById(noteIDFromRequest, (err, note) => {
+          console.log('note', note);
+          console.log('error', err);
+          
           if (note) {
             note.remove()
-            const userNoteIDIndex = user.noteIds.findIndex((noteID) => noteID === noteFromRequest._id)
+            const userNoteIDIndex = user.noteIds.findIndex((noteID) => noteID === noteIDFromRequest)
             user.noteIds.splice(userNoteIDIndex, 1)
             user.save()
+            console.log(user);
             response.send(note)
+          } else {
+            next(new DeleteNoteUnsuccessfulException())
           }
-
         })
+      } else {
+        next(new DeleteNoteUnsuccessfulException())
       }
+      
     }
 }

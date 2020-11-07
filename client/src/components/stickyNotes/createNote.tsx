@@ -49,12 +49,15 @@ export const CreateNote: React.FC<RouteProps> = (props) => {
   const { register, handleSubmit } = useForm()
   const history = useHistory()
   const { notesDispatch } = useContext(NoteContext)
+  
+  const location = history.location as Location<HistoryState>
+  const defaultDate = location.state?.date ? new Date(location.state.date) : new Date()  
 
   const saveForm = (noteData: NoteData) => {
-    const noteDate = new Date()
+  
     const note = createNote({
       ...noteData,
-      date: noteDate,
+      date: defaultDate,
     })
 
     saveNote(note).then((value: INote) => {
@@ -62,9 +65,6 @@ export const CreateNote: React.FC<RouteProps> = (props) => {
       history.push('/home')
     })
   }
-
-  const location = history.location as Location<HistoryState>
-  const defaultDate = location.state?.date ? new Date(location.state.date) : new Date()  
   
   return (
     <div className={classes.createNote}>

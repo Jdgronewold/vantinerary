@@ -43,7 +43,9 @@ function notesReducer(state: NotesState, action: NotesActions): NotesState {
     }
     case NotesActionTypes.DELETE_NOTE: {
       const noteIndex = state.notes.findIndex((note: INote) => note._id = action.payload._id )
-      return { notes: state.notes.splice(noteIndex, 1), currentNote:  null }
+      const newNotes = state.notes.slice()
+      newNotes.splice(noteIndex, 1)
+      return { notes: newNotes, currentNote:  null }
     }
     case NotesActionTypes.SELECT_NOTE: {
       return {

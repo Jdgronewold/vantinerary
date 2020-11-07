@@ -53,19 +53,29 @@ class NotesController {
                 });
             }
         };
-        this.deleteNote = (request, response) => {
-            const noteFromRequest = request.body;
+        this.deleteNote = (request, response, next) => {
+            const noteIDFromRequest = request.body.id;
             const { user } = request;
+            console.log(noteIDFromRequest);
             if (user) {
-                Models_1.noteModel.findById(noteFromRequest._id, (err, note) => {
+                Models_1.noteModel.findById(noteIDFromRequest, (err, note) => {
+                    console.log('note', note);
+                    console.log('error', err);
                     if (note) {
                         note.remove();
-                        const userNoteIDIndex = user.noteIds.findIndex((noteID) => noteID === noteFromRequest._id);
+                        const userNoteIDIndex = user.noteIds.findIndex((noteID) => noteID === noteIDFromRequest);
                         user.noteIds.splice(userNoteIDIndex, 1);
                         user.save();
+                        console.log(user);
                         response.send(note);
                     }
+                    else {
+                        next(new Middleware_1.DeleteNoteUnsuccessfulException());
+                    }
                 });
+            }
+            else {
+                next(new Middleware_1.DeleteNoteUnsuccessfulException());
             }
         };
         this.intializeRoutes();

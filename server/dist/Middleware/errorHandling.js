@@ -43,6 +43,12 @@ class AuthenticationTokenMissingException extends HttpException {
     }
 }
 exports.AuthenticationTokenMissingException = AuthenticationTokenMissingException;
+class DeleteNoteUnsuccessfulException extends HttpException {
+    constructor() {
+        super(400, 'Note deletion was not successful');
+    }
+}
+exports.DeleteNoteUnsuccessfulException = DeleteNoteUnsuccessfulException;
 function errorMiddleware(error, request, response, next) {
     const status = error.status || 500;
     const message = error.message || 'Something went wrong';
