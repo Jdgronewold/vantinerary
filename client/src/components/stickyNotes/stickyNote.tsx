@@ -6,8 +6,8 @@ import { formatDate } from '../../utils/noteUtils';
 
 const useStyles = makeStyles((theme) => ({
   stickyRoot: {
-    width: '200px',
-    height: '200px',
+    width: 175,
+    height: 150,
     color: theme.palette.secondary.contrastText,
     margin: theme.spacing(2),
     ...flexStyles({ flexDirection: 'column'}),
@@ -23,7 +23,13 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     backgroundColor: theme.palette.secondary.main,
     borderBottom: `2px solid ${theme.palette.secondary.dark}`,
-    ...flexStyles({ justifyContent: 'space-between'})
+    ...flexStyles({ justifyContent: 'space-between'}),
+  },
+  stickyHeaderTitle: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    flex: 1,
+    height: 30
   },
   stickyHeaderDate: {
     fontSize: 10
@@ -32,7 +38,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.light,
     flex: 1,
     width: '100%',
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
+    height: 120,
+    overflow: 'scroll'
   }
 }))
 
@@ -46,7 +54,7 @@ export const StickyNote: React.FC<StickyNoteProps> = (props) => {
   return (
     <div className={classes.stickyRoot} onClick={props.clickAction}>
       <div className={classes.stickyHeader}>
-        <span> { props.title || formatDate(props.date) } </span>
+        <span className={classes.stickyHeaderTitle}> { props.title || formatDate(props.date) } </span>
         <span className={classes.stickyHeaderDate}>
           { props.title.length  && props.date ? formatDate(props.date) : '' }
         </span>
