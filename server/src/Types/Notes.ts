@@ -5,5 +5,6 @@ export interface INote {
   date: Date,
   location?: string,
   showOnCalendar: boolean,
-  tag: any
+  tag: any,
+  _id: string
 }

@@ -37,11 +37,44 @@ class NotesController {
                 });
             }
         };
+        this.editNote = (request, response) => {
+            const noteFromRequest = request.body;
+            const { user } = request;
+            if (user) {
+                Models_1.noteModel.findById(noteFromRequest._id, (err, note) => {
+                    if (note) {
+                        note.body = noteFromRequest.body;
+                        note.date = noteFromRequest.date;
+                        note.title = noteFromRequest.title;
+                        note.showOnCalendar = noteFromRequest.showOnCalendar;
+                        note.save();
+                        response.send(note);
+                    }
+                });
+            }
+        };
+        this.deleteNote = (request, response) => {
+            const noteFromRequest = request.body;
+            const { user } = request;
+            if (user) {
+                Models_1.noteModel.findById(noteFromRequest._id, (err, note) => {
+                    if (note) {
+                        note.remove();
+                        const userNoteIDIndex = user.noteIds.findIndex((noteID) => noteID === noteFromRequest._id);
+                        user.noteIds.splice(userNoteIDIndex, 1);
+                        user.save();
+                        response.send(note);
+                    }
+                });
+            }
+        };
         this.intializeRoutes();
     }
     intializeRoutes() {
         this.router.get(`${this.path}`, Middleware_1.authMiddleware, this.getAllNotes);
         this.router.post(`${this.path}`, Middleware_1.authMiddleware, this.createNote);
+        this.router.put(`${this.path}`, Middleware_1.authMiddleware, this.editNote);
+        this.router.delete(`${this.path}`, Middleware_1.authMiddleware, this.deleteNote);
     }
 }
 exports.NotesController = NotesController;
