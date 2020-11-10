@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from 'react'
 import { Switch } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { flexStyles } from '../../utils/styleUtils';
-import { Sidebar } from '../sidebar/sidebar'
 import { VanCalendar } from '../calendar/calendar'
 import { NoteContext } from '../../state/notesState';
 import { getNotes } from '../../services/noteService'
@@ -64,7 +63,6 @@ export const HomePage = () => {
 
   return (
     <div className={classes.homepage}>
-      <Sidebar />
       <div className={classes.mainContent}>
         <Switch>
           <PrivateRoute exact path='/home'> <MainPage /></PrivateRoute>

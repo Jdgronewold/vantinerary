@@ -7,7 +7,6 @@ import { createNote } from '../../utils/noteUtils'
 import { useHistory, RouteProps } from 'react-router-dom'
 import { editNote as editNoteAction } from '../../actions/notesActions'
 import { INote, NoteContext } from '../../state/notesState'
-import { Location } from 'history';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -75,7 +74,7 @@ export const EditNote: React.FC<RouteProps> = (props) => {
     <div className={classes.createNote}>
       <Typography component="h2" variant="h4">
           Edit Note
-        </Typography>
+      </Typography>
       <form onSubmit={handleSubmit(saveForm)} className={classes.createNoteForm}>
         <Grid container spacing={2}>
           <Grid item xs={10}>
