@@ -11,6 +11,8 @@ import { PrivateRoute } from '../routes/privateRoute';
 import { CreateNote } from '../stickyNotes/createNote'
 import { EditNote } from '../stickyNotes/editNote'
 import { DisplayNote } from '../stickyNotes/displayNote';
+import { AppContext } from '../../state';
+import { Map } from '../map/map'
 
 const useStyles = makeStyles((theme) => ({
     homepage: {
@@ -30,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   })
 ) 
 
-const MainPage = () => {
+const MainCalendarPage = () => {
   const classes = useStyles()
   const { currentNote } = useContext(NoteContext)
 
@@ -48,9 +50,16 @@ const MainPage = () => {
   )
 }
 
+const MainMapPage = () => {
+  return (
+    <Map />
+  )
+}
+
 export const HomePage = () => {
   const classes = useStyles()
   const { notesDispatch } = useContext(NoteContext)
+  const { mainView } = useContext(AppContext)
 
   useEffect(() => {
     
@@ -65,7 +74,13 @@ export const HomePage = () => {
     <div className={classes.homepage}>
       <div className={classes.mainContent}>
         <Switch>
-          <PrivateRoute exact path='/home'> <MainPage /></PrivateRoute>
+          <PrivateRoute exact path='/home'>
+            {
+              mainView === 'calendar' ?
+              <MainCalendarPage /> :
+              <MainMapPage />
+            }
+          </PrivateRoute>
           <PrivateRoute path='/home/createNote'><CreateNote/></PrivateRoute>
           <PrivateRoute path='/home/editNote'><EditNote/></PrivateRoute>
         </Switch>

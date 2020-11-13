@@ -4,7 +4,6 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Menu'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { UserContext } from '../../state/userState'
