@@ -26,7 +26,7 @@ const userData = {
     email: 'jeff@gmail.com',
     password: 'password',
     friends: [],
-    tripDiaryId: '',
+    itineraryIds: [],
     noteIds: [],
     _id: ''
 };

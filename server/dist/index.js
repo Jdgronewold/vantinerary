@@ -13,7 +13,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app = new App_1.default([
     new Controllers_1.AuthController(),
-    new Controllers_1.NotesController()
+    new Controllers_1.NotesController(),
+    new Controllers_1.ItineraryController()
 ], 5000);
 app.listen();
 //# sourceMappingURL=index.js.map

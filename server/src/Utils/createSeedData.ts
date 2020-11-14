@@ -8,7 +8,7 @@ const userData: IUser = {
   email: 'jeff@gmail.com',
   password: 'password',
   friends: [],
-  tripDiaryId: '',
+  itineraryIds: [],
   noteIds: [],
   _id: ''
 }

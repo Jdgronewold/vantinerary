@@ -7,7 +7,7 @@ export interface IUser {
     password: string;
     friends: string[];
     noteIds: string[];
-    tripDiaryId: string;
+    itineraryIds: string[];
     _id: string;
 }
 
