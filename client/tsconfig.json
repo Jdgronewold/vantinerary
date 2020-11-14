@@ -20,6 +20,7 @@
     "jsx": "react",
     "strictNullChecks": false
   },
+  "types": ["googlemaps"],
   "include": [
     "src", "../server/src/Types"
   ]

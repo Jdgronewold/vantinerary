@@ -11,7 +11,7 @@ interface AppContextType extends AppState {
 }
 
 export const AppContext = React.createContext<AppContextType>({
-  mainView: 'calendar',
+  mainView: 'map',
   appDispatch: () => {}
 })
 
@@ -26,7 +26,7 @@ function appReducer(state: AppState, action: AppActions): AppState {
 }
 
 export const AppProvider: React.FunctionComponent = ({ children }) => {
-  const [ { mainView }, appDispatch] = useReducer(appReducer, { mainView: 'calendar' })
+  const [ { mainView }, appDispatch] = useReducer(appReducer, { mainView: 'map' })
   const [contextValue, setContext] = useState<AppContextType>({ mainView, appDispatch })
 
   useEffect(() => {
