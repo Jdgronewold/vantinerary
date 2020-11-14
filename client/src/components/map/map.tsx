@@ -2,17 +2,19 @@ import React from 'react'
 import GoogleMapReact from 'google-map-react'
 import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
+import { ItineraryPlanner } from '../itinerary/itineraryPlanner'
 
 const useStyles = makeStyles((theme) => ({
   mapRoot: {
     height: `calc(50% - ${theme.spacing(1)}px)`,
     width: '100%',
-    ...flexStyles({}),
+    ...flexStyles({ justifyContent: 'flex-end'}),
     paddingTop: theme.spacing(2)
   },
   mapContainer: {
     height: '100%',
-    width: '50%'
+    width: '50%',
+    ...flexStyles({})
   }
 }))
 
@@ -46,6 +48,8 @@ export const Map: React.FC = () => {
             
             directionsService.route(routeRequest,
               (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => {
+                console.log(result);
+                
                 directionsRenderer.setDirections(result)
                 directionsRenderer.setMap(gmaps.map)
             })
@@ -56,6 +60,7 @@ export const Map: React.FC = () => {
           
         </GoogleMapReact>
       </div>
+      <ItineraryPlanner />
     </div>
   )
 }
