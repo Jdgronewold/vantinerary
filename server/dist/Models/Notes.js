@@ -11,7 +11,8 @@ const noteSchema = new mongoose_1.default.Schema({
     date: Date,
     location: String,
     showOnCalendar: Boolean,
-    tag: Object
+    tag: Object,
+    _id: String
 });
 exports.noteModel = mongoose_1.default.model('Note', noteSchema);
 //# sourceMappingURL=Notes.js.map

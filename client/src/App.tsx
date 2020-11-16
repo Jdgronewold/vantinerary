@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
 import { Header } from './components/header/header';
-import { UserProvider, NotesProvider, AppProvider } from './state'
+import { StateManager } from './state/stateManager'
 import { Login } from './components/login/login'
 import { Splash } from './components/splash/splash'
 import { PrivateRoute } from './components/routes/privateRoute'
@@ -14,22 +14,18 @@ import './App.scss';
 function App() {
   return (
     <div className="App">
-      <UserProvider>
-        <NotesProvider>
-          <AppProvider>
-            <AxiosConfig>
-              <BrowserRouter>
-                <Header />
-                <Switch>
-                  <ReversePrivateRoute exact path="/login" ><Login /></ReversePrivateRoute>
-                  <ReversePrivateRoute exact path={["/", "/welcome"]} ><Splash /></ReversePrivateRoute>
-                  <PrivateRoute path={'/home'}> <HomePage /> </PrivateRoute>
-                </Switch>
-              </BrowserRouter>
-            </AxiosConfig>
-          </AppProvider>
-        </NotesProvider>
-      </UserProvider>
+      <StateManager>
+        <AxiosConfig>
+          <BrowserRouter>
+            <Header />
+            <Switch>
+              <ReversePrivateRoute exact path="/login" ><Login /></ReversePrivateRoute>
+              <ReversePrivateRoute exact path={["/", "/welcome"]} ><Splash /></ReversePrivateRoute>
+              <PrivateRoute path={'/home'}> <HomePage /> </PrivateRoute>
+            </Switch>
+          </BrowserRouter>
+        </AxiosConfig>
+      </StateManager>
     </div>
   );
 }
