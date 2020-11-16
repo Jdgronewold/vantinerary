@@ -18,7 +18,7 @@ import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   createNote: {
-    padding: 15
+    padding: theme.spacing(2)
   },
   createNoteForm: {
     paddingTop: 15

@@ -4,7 +4,8 @@ import { ItineraryActions, ItineraryActionTypes } from '../actions'
 export interface Itinerary {
   _id: string,
   authorId: string,
-  tripLegs: tripLeg[]
+  tripLegs: tripLeg[],
+  title: string
 }
 
 export interface tripLeg {

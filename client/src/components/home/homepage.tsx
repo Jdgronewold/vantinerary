@@ -13,6 +13,7 @@ import { EditNote } from '../stickyNotes/editNote'
 import { DisplayNote } from '../stickyNotes/displayNote';
 import { AppContext } from '../../state';
 import { Map } from '../map/map'
+import { CreateItinerary } from '../itinerary/createItinerary'
 
 const useStyles = makeStyles((theme) => ({
     homepage: {
@@ -82,6 +83,7 @@ export const HomePage = () => {
             }
           </PrivateRoute>
           <PrivateRoute path='/home/createNote'><CreateNote/></PrivateRoute>
+          <PrivateRoute path='/home/createItinerary'> <CreateItinerary /> </PrivateRoute>
           <PrivateRoute path='/home/editNote'><EditNote/></PrivateRoute>
         </Switch>
       </div>

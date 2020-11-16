@@ -72,6 +72,9 @@ export const Header = () => {
 
   const handleMenuSelection = (index: number) => {
     appDispatch(switchMainView(options[index]))
+    if (history.location.pathname !== '/home') {
+      history.push('/home')
+    }
     setAnchorEl(null);
   };
   
