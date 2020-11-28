@@ -13,13 +13,32 @@ export class ItineraryController implements IController {
     }
 
     public intializeRoutes() {
-      this.router.get(`${this.path}`, authMiddleware, this.getAllItins);
+      this.router.get(`${this.path}`, authMiddleware, this.getAllItineraries)
+      this.router.post(`${this.path}`, authMiddleware, this.createItinerary)
     }
 
-    getAllItins = (request: IRequestWithUser, response: express.Response) => {
+    getAllItineraries = (request: IRequestWithUser, response: express.Response) => {
       if (request.user) {
         this.itinerary.find({_id: { $in : request.user.itineraryIds } }).then((itineraries: Itinerary[]) => {
           response.send(itineraries)
+        })
+      }
+    }
+
+    createItinerary = (request: IRequestWithUser, response: express.Response) => {
+      const itinerary: Itinerary = request.body
+      const { user } = request
+      if (user) {
+        itinerary.authorId = user._id
+        const createdItinerary = new itineraryModel(itinerary)
+        const itineraryPromise = createdItinerary.save()
+        user.itineraryIds.push(createdItinerary._id)
+        const userPromise = user.save()
+
+        
+        
+        Promise.all([itineraryPromise, userPromise]).then(([savedItinerary]) => {
+            response.send(savedItinerary)
         })
       }
     }

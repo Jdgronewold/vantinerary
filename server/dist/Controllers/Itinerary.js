@@ -15,17 +15,32 @@ class ItineraryController {
         this.path = '/itinerary';
         this.router = express.Router();
         this.itinerary = Models_1.itineraryModel;
-        this.getAllItins = (request, response) => {
+        this.getAllItineraries = (request, response) => {
             if (request.user) {
                 this.itinerary.find({ _id: { $in: request.user.itineraryIds } }).then((itineraries) => {
                     response.send(itineraries);
                 });
             }
         };
+        this.createItinerary = (request, response) => {
+            const itinerary = request.body;
+            const { user } = request;
+            if (user) {
+                itinerary.authorId = user._id;
+                const createdItinerary = new Models_1.itineraryModel(itinerary);
+                const itineraryPromise = createdItinerary.save();
+                user.itineraryIds.push(createdItinerary._id);
+                const userPromise = user.save();
+                Promise.all([itineraryPromise, userPromise]).then(([savedItinerary]) => {
+                    response.send(savedItinerary);
+                });
+            }
+        };
         this.intializeRoutes();
     }
     intializeRoutes() {
-        this.router.get(`${this.path}`, Middleware_1.authMiddleware, this.getAllItins);
+        this.router.get(`${this.path}`, Middleware_1.authMiddleware, this.getAllItineraries);
+        this.router.post(`${this.path}`, Middleware_1.authMiddleware, this.createItinerary);
     }
 }
 exports.ItineraryController = ItineraryController;

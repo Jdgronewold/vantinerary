@@ -10,8 +10,8 @@ export interface tripLeg {
   distance: string,
   time: string,
   overviewPolyline: string,
-  arrivalDate: Date,
-  departureDate: Date
+  startDate: Date,
+  endDate: Date
 }
 
 export interface Coords {

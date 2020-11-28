@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import moment from 'moment'
+import { CreateTripLeg } from './createTripLeg'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,8 +46,8 @@ interface ItineraryData {
   distance: string,
   time: string,
   overviewPolyline: string,
-  arrivalDate: Date,
-  departureDate: Date
+  startDate: Date,
+  endDate: Date
 }
 
 export const CreateItinerary = () => {
@@ -55,7 +56,8 @@ export const CreateItinerary = () => {
   const { itineraryDispatch } = useContext(ItineraryContext)  
 
   const saveForm = (itineraryData: ItineraryData) => {
-  
+    console.log(itineraryData);
+    
   }
 
   const defaultDate = new Date()  
@@ -64,7 +66,7 @@ export const CreateItinerary = () => {
     <div className={classes.itineraryRoot}>
       <Typography component="h2" variant="h4">
           Create An Itinerary
-        </Typography>
+      </Typography>
       <form onSubmit={handleSubmit(saveForm)} className={classes.createItineraryForm}>
         <Grid container spacing={2}>
           <Grid item xs={10}>
@@ -77,44 +79,12 @@ export const CreateItinerary = () => {
               name="title"
             />
           </Grid>
-          <Grid container className={classes.dateForm}>
-            <Grid item xs={4}>
-              <FormControlLabel
-                control={
-                    <TextField
-                    variant="outlined"
-                    inputRef={register}
-                    name="date"
-                    defaultValue={moment(defaultDate).format('YYYY-MM-DD')}
-                    type="date"
-                    id="date"
-                    className={classes.dateField}
-                  />
-                }
-                label="Start Date"
-                labelPlacement='start'
-                classes={{ root: classes.dateFieldContainer }}
-                />
-            </Grid>
-            <Grid item xs={4}>
-              <FormControlLabel
-                control={
-                    <TextField
-                    variant="outlined"
-                    inputRef={register}
-                    name="date"
-                    defaultValue={moment(defaultDate).format('YYYY-MM-DD')}
-                    type="date"
-                    id="date"
-                    className={classes.dateField}
-                  />
-                }
-                label="End Date"
-                labelPlacement='start'
-                classes={{ root: classes.dateFieldContainer }}
-                />
-            </Grid>
+          <Grid item xs={10}>
+            <Typography component="h2" variant="h6">
+              Create a trip segment
+            </Typography>
           </Grid>
+          <CreateTripLeg register={register} />
           <Grid item xs={12}>
             <TextField
               variant="outlined"

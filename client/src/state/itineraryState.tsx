@@ -4,11 +4,11 @@ import { ItineraryActions, ItineraryActionTypes } from '../actions'
 export interface Itinerary {
   _id: string,
   authorId: string,
-  tripLegs: tripLeg[],
+  tripLegs: TripLeg[],
   title: string
 }
 
-export interface tripLeg {
+export interface TripLeg {
   origin: Coords,
   destination: Coords,
   distance: string,

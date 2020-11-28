@@ -53,7 +53,7 @@ const MainCalendarPage = () => {
 
 const MainMapPage = () => {
   return (
-    <Map />
+    <Map tripLegs={[]}/>
   )
 }
 
