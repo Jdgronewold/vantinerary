@@ -9,14 +9,8 @@ import { Marker } from './marker'
 
 const useStyles = makeStyles((theme) => ({
   mapRoot: {
-    height: `calc(50% - ${theme.spacing(1)}px)`,
+    height: `100%`,
     width: '100%',
-    ...flexStyles({ justifyContent: 'flex-end'}),
-    paddingTop: theme.spacing(2)
-  },
-  mapContainer: {
-    height: '100%',
-    width: '50%',
     ...flexStyles({}),
     position: 'relative'
   },
@@ -38,11 +32,13 @@ const useStyles = makeStyles((theme) => ({
 
 interface MapProps {
   tripLegs: TripLeg[]
+  shouldAllowSearch?: boolean
+  shouldShowPlanner?: boolean
 }
 
 
 
-export const Map: React.FC<MapProps> = ({ tripLegs }) => {
+export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, shouldShowPlanner = false  }) => {
   const [mapIsLoaded, setMapLoaded] = useState(false)
   const [currentMarker, setCurrentMarker] = useState<google.maps.places.PlaceResult>(null)
   const searchBoxRef = useRef()
@@ -67,9 +63,6 @@ export const Map: React.FC<MapProps> = ({ tripLegs }) => {
     }
 
     setCurrentMarker(place)
-
-    // addplace(selected);
-    // searchBoxRef?.current.blur();
   }
 
   useEffect(() => {
@@ -109,8 +102,6 @@ export const Map: React.FC<MapProps> = ({ tripLegs }) => {
 
   return (
     <div className={classes.mapRoot}>
-      <div className={classes.mapContainer}>
-      
       <GoogleMapReact
           defaultZoom={10}
           bootstrapURLKeys={{
@@ -126,9 +117,12 @@ export const Map: React.FC<MapProps> = ({ tripLegs }) => {
 
             directionsService = new mapsApi.DirectionsService()
             directionsRenderer = new mapsApi.DirectionsRenderer()            
-            searchBox = new mapsApi.places.SearchBox(searchBoxRef.current)
-            searchBox.addListener('places_changed', onPlacesChanged);
             geometry = mapsApi.geometry
+
+            if (shouldAllowSearch) {
+              searchBox = new mapsApi.places.SearchBox(searchBoxRef.current)
+              searchBox.addListener('places_changed', onPlacesChanged);
+            }
             
 
             setMapLoaded(true)   
@@ -140,22 +134,24 @@ export const Map: React.FC<MapProps> = ({ tripLegs }) => {
             <Marker
               lat={currentMarker.geometry.location.lat()}
               lng={currentMarker.geometry.location.lng()}
-              onClick={() => {}}
+              place={currentMarker}
             />
           }
         </GoogleMapReact>
-        <FilledInput
-          inputRef={searchBoxRef}
-          name="searchBox"
-          type="text"
-          id="searchBox"
-          classes={{
-            input: classes.searchBoxRoot
-          }}
-          className={classes.searchBox}
-        />
-      </div>
-      <ItineraryPlanner />
+        { 
+          shouldAllowSearch &&
+          <FilledInput
+            inputRef={searchBoxRef}
+            name="searchBox"
+            type="text"
+            id="searchBox"
+            classes={{
+              input: classes.searchBoxRoot
+            }}
+            className={classes.searchBox}
+          />
+        }
+      { shouldShowPlanner && <ItineraryPlanner /> }
     </div>
   )
 }

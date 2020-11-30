@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
       height: '50%',
       paddingTop: theme.spacing(3),
       ...flexStyles({})
+    },
+    mapRoot: {
+      height: `calc(50% - ${theme.spacing(1)}px)`,
+      width: '100%',
+      ...flexStyles({ justifyContent: 'flex-end'}),
     }
   })
 ) 
@@ -52,8 +57,12 @@ const MainCalendarPage = () => {
 }
 
 const MainMapPage = () => {
+  const classes = useStyles()
   return (
-    <Map tripLegs={[]}/>
+    <div className={classes.mapRoot}>
+      <Map tripLegs={[]} shouldShowPlanner={true} />
+    </div>
+    
   )
 }
 

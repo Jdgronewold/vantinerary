@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import { useForm } from "react-hook-form"
@@ -40,6 +40,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+interface MapMarkerState {
+  origin: google.maps.places.PlaceResult
+  destination: google.maps.places.PlaceResult
+}
+
+export interface MapMarkerContextType extends MapMarkerState {
+  setPlace: (place: Partial<MapMarkerState>) => void
+}
+
+export const MapMarkerContext = React.createContext<MapMarkerContextType>({
+  origin: null,
+  destination: null,
+  setPlace: () => {}
+}) 
+
 interface ItineraryData {
   origin: Coords,
   destination: Coords,
@@ -54,13 +69,22 @@ export const CreateItinerary = () => {
   const classes = useStyles()
   const { register, handleSubmit } = useForm()
   const { itineraryDispatch } = useContext(ItineraryContext)  
+  const [mapMarkerState, setMapMarkerState] = useState<MapMarkerState>({
+    origin: null,
+    destination: null
+  })
 
   const saveForm = (itineraryData: ItineraryData) => {
     console.log(itineraryData);
-    
   }
 
-  const defaultDate = new Date()  
+  const setPlace = (place: Partial<MapMarkerState>) => {
+    setMapMarkerState({
+      ...mapMarkerState,
+      ...place
+    })
+  }
+
   
   return (
     <div className={classes.itineraryRoot}>
@@ -84,7 +108,9 @@ export const CreateItinerary = () => {
               Create a trip segment
             </Typography>
           </Grid>
-          <CreateTripLeg register={register} />
+          <MapMarkerContext.Provider value={{ ...mapMarkerState, setPlace }}>
+            <CreateTripLeg register={register} />
+          </MapMarkerContext.Provider>
           <Grid item xs={12}>
             <TextField
               variant="outlined"

@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import Avatar from '@material-ui/core/Avatar';
-
+import { MapMarkerContext } from '../itinerary/createItinerary'
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles((theme) => ({
   markerRoot: {
@@ -27,21 +31,70 @@ const useStyles = makeStyles((theme) => ({
 interface MarkerProps {
   lat: number
   lng: number 
-  onClick: () => void
+  place: google.maps.places.PlaceResult
 }
 
-export const Marker = ({ onClick}: MarkerProps) => {
+export const Marker = ({ place }: MarkerProps) => {
+  const options: ('origin' | 'destination')[] = ['origin', 'destination']
   const classes = useStyles()
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const { setPlace } = useContext(MapMarkerContext)
+
+  // TODO: Turn into generic component
+  const handleNavClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleNavClose = (event: React.MouseEvent) => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuSelection = (index: number) => {
+    setPlace({
+      [options[index]]: place
+    })
+    setAnchorEl(null);
+  };
 
   return (
-    <Avatar
-      className={classes.markerRoot}
-      variant='rounded'
-      classes={{
-        colorDefault: classes.markerPrimary
-      }}
-    >
-      <AirportShuttleIcon />
-    </Avatar>
+    <>
+      <IconButton
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+        aria-controls="main-view-menu"
+        size="small"
+        onClick={handleNavClick}
+        className={classes.markerRoot}
+      >
+        <AirportShuttleIcon />
+      </IconButton>
+      <Menu
+        id="main-view-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleNavClose}
+        getContentAnchorEl={null}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+      >
+      {
+        options.map((option, index) => {
+        return (
+          <MenuItem
+            onClick={() => handleMenuSelection(index)}
+            key={option}
+          >
+            <Typography variant="body1" color="inherit"> { ` Set as ${option}` } </Typography>
+          </MenuItem>
+        )
+      })
+      }              
+    </Menu>
+    </>
   )
 }

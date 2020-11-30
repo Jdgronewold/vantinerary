@@ -61,7 +61,7 @@ export const Header = () => {
 
   const onClick = isLoggedIn ? handleLogout : handleLogin
 
-
+  // TODO: Turn into generic component
   const handleNavClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -94,16 +94,16 @@ export const Header = () => {
               >
                 { mainView.toUpperCase() }
               </Typography>
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  aria-controls="main-view-menu"
-                  size="small"
-                  onClick={handleNavClick}
-                >
-                  < DetailsIcon className={classes.mainViewIcon}/>
-                </IconButton>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                aria-controls="main-view-menu"
+                size="small"
+                onClick={handleNavClick}
+              >
+                < DetailsIcon className={classes.mainViewIcon}/>
+              </IconButton>
               <Menu
                 id="main-view-menu"
                 anchorEl={anchorEl}
