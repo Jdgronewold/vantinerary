@@ -34,32 +34,33 @@ interface MapProps {
   tripLegs: TripLeg[]
   shouldAllowSearch?: boolean
   shouldShowPlanner?: boolean
+  onDirectionsResult?: (result: google.maps.DirectionsResult) => void
 }
 
 
 
-export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, shouldShowPlanner = false  }) => {
+export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, shouldShowPlanner = false, onDirectionsResult  }) => {
   const [mapIsLoaded, setMapLoaded] = useState(false)
   const [currentMarker, setCurrentMarker] = useState<google.maps.places.PlaceResult>(null)
   const searchBoxRef = useRef()
-  let directionsService: google.maps.DirectionsService = null
-  let directionsRenderer: google.maps.DirectionsRenderer = null
-  let searchBox: google.maps.places.SearchBox
-  let map: google.maps.Map = null
-  let mapsApi: any
-  let geometry: any
+  const directionsService = useRef<google.maps.DirectionsService>(null)
+  const directionsRenderer = useRef<google.maps.DirectionsRenderer>(null)
+  const searchBox = useRef<google.maps.places.SearchBox>(null)
+  const map = useRef<google.maps.Map>(null)
+  const mapsApi = useRef<any>(null)
+  const geometry = useRef<any>(null)  
 
   const classes = useStyles()
 
   const onPlacesChanged = () => {
-    const selected = searchBox.getPlaces();
+    const selected = searchBox.current.getPlaces();
     const { 0: place } = selected;
     if (!place.geometry) return;
     if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
+      map.current.fitBounds(place.geometry.viewport);
     } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);
+      map.current.setCenter(place.geometry.location);
+      map.current.setZoom(17);
     }
 
     setCurrentMarker(place)
@@ -69,9 +70,9 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
     if (mapIsLoaded) {
       tripLegs.forEach(({ overviewPolyline, destination, origin }: TripLeg) => {
 
-        if (overviewPolyline.length) {
-          const polygon: google.maps.Polygon = new mapsApi.Polygon({
-            paths: geometry?.encoding.decodePath(overviewPolyline),
+        if (overviewPolyline?.length) {
+          const polygon: google.maps.Polygon = new mapsApi.current.Polygon({
+            paths: geometry.current.encoding.decodePath(overviewPolyline),
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -79,7 +80,7 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
             fillOpacity: 0.35
           })
 
-          polygon.setMap(map)
+          polygon.setMap(map.current)
 
         } else {
           const request: google.maps.DirectionsRequest = {
@@ -88,17 +89,20 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
             travelMode: google.maps.TravelMode.DRIVING
           }
 
-          directionsService.route(request,
+          directionsService.current.route(request,
             (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => {
               console.log(result);
               
-              directionsRenderer.setDirections(result)
-              directionsRenderer.setMap(map)
+              directionsRenderer.current.setDirections(result)
+              directionsRenderer.current.setMap(map.current)
+              if (onDirectionsResult) {
+                onDirectionsResult(result)
+              }
           })
         }
       })
     }
-  }, [mapIsLoaded])
+  }, [mapIsLoaded, tripLegs])
 
   return (
     <div className={classes.mapRoot}>
@@ -111,17 +115,18 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
           defaultCenter={{ lat: 40.0150, lng: -105.2705}}
           yesIWantToUseGoogleMapApiInternals
           onGoogleApiLoaded={(gmaps) => {
-            console.log(gmaps);
-            mapsApi = gmaps.maps
-            map = gmaps.map
+            mapsApi.current = gmaps.maps
+            map.current = gmaps.map
 
-            directionsService = new mapsApi.DirectionsService()
-            directionsRenderer = new mapsApi.DirectionsRenderer()            
-            geometry = mapsApi.geometry
+            directionsService.current = new mapsApi.current.DirectionsService()
+            console.log(directionsService);
+            
+            directionsRenderer.current = new mapsApi.current.DirectionsRenderer()            
+            geometry.current = mapsApi.current.geometry
 
             if (shouldAllowSearch) {
-              searchBox = new mapsApi.places.SearchBox(searchBoxRef.current)
-              searchBox.addListener('places_changed', onPlacesChanged);
+              searchBox.current = new mapsApi.current.places.SearchBox(searchBoxRef.current)
+              searchBox.current.addListener('places_changed', onPlacesChanged);
             }
             
 
@@ -130,7 +135,7 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
           }
         >
           {
-            currentMarker &&
+            currentMarker && !tripLegs.length &&
             <Marker
               lat={currentMarker.geometry.location.lat()}
               lng={currentMarker.geometry.location.lng()}

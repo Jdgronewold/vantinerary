@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import { useForm } from "react-hook-form"
-import { ItineraryContext, Coords } from '../../state'
+import { ItineraryContext, Location } from '../../state'
 import { saveItinerary } from '../../actions'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -56,8 +56,8 @@ export const MapMarkerContext = React.createContext<MapMarkerContextType>({
 }) 
 
 interface ItineraryData {
-  origin: Coords,
-  destination: Coords,
+  origin?: Location,
+  destination?: Location,
   distance: string,
   time: string,
   overviewPolyline: string,

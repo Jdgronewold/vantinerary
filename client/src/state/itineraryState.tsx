@@ -9,13 +9,19 @@ export interface Itinerary {
 }
 
 export interface TripLeg {
-  origin: Coords,
-  destination: Coords,
-  distance: string,
-  time: string,
-  overviewPolyline: string,
-  arrivalDate: Date,
-  departureDate: Date
+  origin: Location,
+  destination: Location,
+  distance?: string,
+  time?: string,
+  overviewPolyline?: string,
+  arrivalDate?: Date,
+  departureDate?: Date
+}
+
+export interface Location {
+  lat: number,
+  lng: number,
+  name: string
 }
 
 export interface Coords {
