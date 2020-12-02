@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import TextField from '@material-ui/core/TextField'
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   locationField: {
     width: 193,
-    padding: `18.5px 14px`,
+    padding: `18.5px 12px`,
     borderRadius: 4,
     border: '1px solid rgba(0, 0, 0, 0.87)',
     cursor: 'default'
@@ -40,17 +40,21 @@ const useStyles = makeStyles((theme) => ({
   mapRoot: {
     height: 400,
     width: 400,
-    ...flexStyles({})
+    ...flexStyles({}),
+    paddingTop: theme.spacing(2)
   }
 }))
 
 interface CreateTripLegProps {
-  register: () => void
+  register: () => void,
+  watch: (fieldName: string) => any
 }
 
-export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register }: CreateTripLegProps) => {
+export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register, watch }: CreateTripLegProps) => {
   const classes = useStyles()
   const { origin, destination, editedTripLeg, setMapContext } = useContext(MapMarkerContext)
+  const startDate = watch('startDate') as Date
+  const endDate = watch('endDate') as Date
 
   const defaultDate = new Date()  
 
@@ -59,13 +63,15 @@ export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register }: Create
       result,
       {
         origin: convertPlaceToLocation(origin),
-        destination: convertPlaceToLocation(destination)
+        destination: convertPlaceToLocation(destination),
+        arrivalDate: endDate,
+        departureDate: startDate
       }
     )
     setMapContext({ editedTripLeg: newTripLeg })
   }
 
-  const drawnTripLegs = origin && destination ? [editedTripLeg] : []
+  const drawnTripLegs = useMemo(() => origin && destination ? [editedTripLeg] : [], [origin, destination])
 
   return (
     <Grid container>
@@ -126,6 +132,30 @@ export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register }: Create
               </div>
             }
             label="Destination"
+            labelPlacement='start'
+            classes={{ root: classes.disabledClass  }}
+          />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={
+              <div className={classes.locationField}>
+                { editedTripLeg?.time || 'Create a route'}
+              </div>
+            }
+            label="Travel Time"
+            labelPlacement='start'
+            classes={{ root: classes.disabledClass  }}
+          />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={
+              <div className={classes.locationField}>
+                { editedTripLeg?.distance || 'Create a route'}
+              </div>
+            }
+            label="Distance"
             labelPlacement='start'
             classes={{ root: classes.disabledClass  }}
           />

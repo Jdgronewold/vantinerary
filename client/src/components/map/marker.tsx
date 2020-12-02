@@ -41,7 +41,11 @@ export const Marker = ({ place }: MarkerProps) => {
 
   const { origin, destination, setMapContext } = useContext(MapMarkerContext)
 
-  // TODO: Turn into generic component
+  if ((origin && destination) && (origin?.place_id === place?.place_id || destination?.place_id === place?.place_id)) {
+    return null
+  }
+
+  // TODO: Turn into generic component to handle pop up
   const handleNavClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };

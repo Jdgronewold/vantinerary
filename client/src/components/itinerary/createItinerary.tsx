@@ -66,7 +66,7 @@ interface ItineraryData {
 
 export const CreateItinerary = () => {
   const classes = useStyles()
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, watch } = useForm()
   const { itineraryDispatch } = useContext(ItineraryContext)  
   const [mapMarkerState, setMapMarkerState] = useState<MapMarkerState>({
     origin: null,
@@ -109,7 +109,7 @@ export const CreateItinerary = () => {
             </Typography>
           </Grid>
           <MapMarkerContext.Provider value={{ ...mapMarkerState, setMapContext }}>
-            <CreateTripLeg register={register} />
+            <CreateTripLeg register={register} watch={watch} />
           </MapMarkerContext.Provider>
           <Grid item xs={12}>
             <TextField

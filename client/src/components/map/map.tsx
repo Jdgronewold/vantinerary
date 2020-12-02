@@ -68,7 +68,7 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
 
   useEffect(() => {
     if (mapIsLoaded) {
-      console.log('loaded');
+      console.log('loaded', tripLegs);
       
       tripLegs.forEach(({ overviewPolyline, destination, origin }: TripLeg) => {
         console.log(overviewPolyline);
@@ -76,6 +76,8 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
         const tripLegRendered = !!directionsRenderer.current.getDirections()?.routes.find((r: google.maps.DirectionsRoute) => r.overview_polyline === overviewPolyline)
 
         if (!tripLegRendered) {
+          console.log('blah');
+          
           if (overviewPolyline?.length) {
             const polygon: google.maps.Polygon = new mapsApi.current.Polygon({
               paths: geometry.current.encoding.decodePath(overviewPolyline),
@@ -142,7 +144,7 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
           }
         >
           {
-            currentMarker && !tripLegs.length &&
+            currentMarker &&
             <Marker
               lat={currentMarker.geometry.location.lat()}
               lng={currentMarker.geometry.location.lng()}
