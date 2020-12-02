@@ -161,7 +161,7 @@ export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register, watch }:
           />
         </Grid>
       </Grid>
-      <Grid container item xs={8}>
+      <Grid container item xs={8} direction='row'>
         <Grid item xs={12} className={classes.mapRoot}>
           <Map
             tripLegs={drawnTripLegs}
@@ -169,6 +169,9 @@ export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register, watch }:
             shouldShowPlanner={false}
             onDirectionsResult={onDirectionsResult}
           />
+        </Grid>
+        <Grid item>
+            Create a route by searching locations on the map and adding them as an origin or destination.
         </Grid>
       </Grid>
     </Grid>

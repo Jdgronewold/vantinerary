@@ -10,8 +10,7 @@ const userSchema = new mongoose_1.default.Schema({
     password: String,
     friends: [String],
     noteIds: [String],
-    itineraryIds: [String],
-    _id: String
+    itineraryIds: [String]
 });
 exports.userModel = mongoose_1.default.model('User', userSchema);
 //# sourceMappingURL=User.js.map

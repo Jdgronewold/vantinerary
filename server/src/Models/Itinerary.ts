@@ -1,18 +1,21 @@
 import mongoose from 'mongoose';
 import { Itinerary } from '../Types/Itinerary'
 
-export const itinerarySchema = new mongoose.Schema({
+const tripLegSchema = new mongoose.Schema({
+  origin: { lat: Number, lng: Number, name: String },
+  destination: { lat: Number, lng: Number, name: String },
+  distance: String,
+  time: String,
+  overviewPolyline: String,
+  arrivalDate: Date,
+  departureDate: Date
+}, {_id: false})
+
+export const itinerarySchema = new mongoose.Schema<Itinerary>({
   authorId: String,
-  _id: String,
-  tripLegs: [{
-    origin: { lat: Number, lng: Number },
-    destination: { lat: Number, lng: Number },
-    distance: String,
-    time: String,
-    overviewPolyline: String,
-    arrivalDate: Date,
-    departureDate: Date
-  }]
+  tripLegs: [tripLegSchema],
+  title: String,
+  notes: String
 })
 
 export const itineraryModel = mongoose.model<Itinerary & mongoose.Document>('Itinerary', itinerarySchema)

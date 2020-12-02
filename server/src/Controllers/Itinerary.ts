@@ -29,8 +29,19 @@ export class ItineraryController implements IController {
       const itinerary: Itinerary = request.body
       const { user } = request
       if (user) {
+        console.log('');
+        console.log('');
+        console.log(itinerary);
+        
         itinerary.authorId = user._id
+        console.log('');
+        console.log('');
         const createdItinerary = new itineraryModel(itinerary)
+        
+        console.log(createdItinerary);
+        console.log('');
+        console.log('');
+        
         const itineraryPromise = createdItinerary.save()
         user.itineraryIds.push(createdItinerary._id)
         const userPromise = user.save()

@@ -2,8 +2,9 @@ import React, { useContext, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import { useForm } from "react-hook-form"
-import { ItineraryContext, Location, TripLeg } from '../../state'
+import { Itinerary, ItineraryContext, Location, TripLeg } from '../../state'
 // import { saveItinerary } from '../../actions'
+import { saveItinerary } from '../../services/itineraryService'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
@@ -55,13 +56,10 @@ export const MapMarkerContext = React.createContext<MapContextType>({
 }) 
 
 interface ItineraryData {
-  origin?: Location,
-  destination?: Location,
-  distance: string,
-  time: string,
-  overviewPolyline: string,
+  title: string,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  notes: string
 }
 
 export const CreateItinerary = () => {
@@ -75,7 +73,14 @@ export const CreateItinerary = () => {
   })
 
   const saveForm = (itineraryData: ItineraryData) => {
-    console.log(itineraryData);
+    // TODO add validation here!
+    const newItinerary: Itinerary = {
+      tripLegs: [mapMarkerState.editedTripLeg],
+      title: itineraryData.title,
+      notes: itineraryData.notes
+    }
+
+    saveItinerary(newItinerary)
   }
 
   const setMapContext = (place: Partial<MapMarkerState>) => {
@@ -116,11 +121,11 @@ export const CreateItinerary = () => {
               variant="outlined"
               fullWidth
               inputRef={register}
-              name="body"
-              label="Leave a note here..."
+              name="notes"
+              label="Leave a description here..."
               type="text"
-              id="body"
-              rows={15}
+              id="notes"
+              rows={5}
               multiline
             />
           </Grid>

@@ -1,7 +1,9 @@
 export interface Itinerary {
   _id: string,
   authorId: string,
-  tripLegs: tripLeg[]
+  tripLegs: tripLeg[],
+  notes: string,
+  title: string
 }
 
 export interface tripLeg {

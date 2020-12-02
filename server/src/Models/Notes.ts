@@ -8,8 +8,7 @@ const noteSchema = new mongoose.Schema({
   date: Date,
   location: String,
   showOnCalendar: Boolean,
-  tag: Object,
-  _id: String
+  tag: Object
 });
 
 export const noteModel = mongoose.model<INote & mongoose.Document>('Note', noteSchema)

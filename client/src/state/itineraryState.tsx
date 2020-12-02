@@ -2,8 +2,8 @@ import React, { useReducer, useState, useEffect } from 'react'
 import { ItineraryActions, ItineraryActionTypes } from '../actions'
 
 export interface Itinerary {
-  _id: string,
-  authorId: string,
+  _id?: string,
+  authorId?: string,
   tripLegs: TripLeg[],
   title: string,
   notes: string

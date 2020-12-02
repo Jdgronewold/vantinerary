@@ -7,8 +7,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   friends: [String],
   noteIds: [String],
-  itineraryIds: [String],
-  _id: String
+  itineraryIds: [String]
 });
  
 export const userModel = mongoose.model<IUser & mongoose.Document>('User', userSchema);
