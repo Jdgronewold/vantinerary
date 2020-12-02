@@ -5,7 +5,8 @@ export interface Itinerary {
   _id: string,
   authorId: string,
   tripLegs: TripLeg[],
-  title: string
+  title: string,
+  notes: string
 }
 
 export interface TripLeg {
@@ -18,9 +19,7 @@ export interface TripLeg {
   departureDate?: Date
 }
 
-export interface Location {
-  lat: number,
-  lng: number,
+export interface Location extends Coords {
   name: string
 }
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import GoogleMapReact from 'google-map-react'
 import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
@@ -68,37 +68,44 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
 
   useEffect(() => {
     if (mapIsLoaded) {
+      console.log('loaded');
+      
       tripLegs.forEach(({ overviewPolyline, destination, origin }: TripLeg) => {
+        console.log(overviewPolyline);
+        console.log(map.current)
+        const tripLegRendered = !!directionsRenderer.current.getDirections()?.routes.find((r: google.maps.DirectionsRoute) => r.overview_polyline === overviewPolyline)
 
-        if (overviewPolyline?.length) {
-          const polygon: google.maps.Polygon = new mapsApi.current.Polygon({
-            paths: geometry.current.encoding.decodePath(overviewPolyline),
-            strokeColor: '#FF0000',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#FF0000',
-            fillOpacity: 0.35
-          })
-
-          polygon.setMap(map.current)
-
-        } else {
-          const request: google.maps.DirectionsRequest = {
-            destination: destination,
-            origin: origin,
-            travelMode: google.maps.TravelMode.DRIVING
+        if (!tripLegRendered) {
+          if (overviewPolyline?.length) {
+            const polygon: google.maps.Polygon = new mapsApi.current.Polygon({
+              paths: geometry.current.encoding.decodePath(overviewPolyline),
+              strokeColor: '#FF0000',
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: '#FF0000',
+              fillOpacity: 0.35
+            })
+  
+            polygon.setMap(map.current)
+  
+          } else {
+            const request: google.maps.DirectionsRequest = {
+              destination: destination,
+              origin: origin,
+              travelMode: google.maps.TravelMode.DRIVING
+            }
+  
+            directionsService.current.route(request,
+              (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => {
+                console.log(result);
+                
+                directionsRenderer.current.setDirections(result)
+                directionsRenderer.current.setMap(map.current)
+                if (onDirectionsResult) {
+                  onDirectionsResult(result)
+                }
+            })
           }
-
-          directionsService.current.route(request,
-            (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => {
-              console.log(result);
-              
-              directionsRenderer.current.setDirections(result)
-              directionsRenderer.current.setMap(map.current)
-              if (onDirectionsResult) {
-                onDirectionsResult(result)
-              }
-          })
         }
       })
     }

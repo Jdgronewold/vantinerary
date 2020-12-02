@@ -2,15 +2,12 @@ import React, { useContext, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import { useForm } from "react-hook-form"
-import { ItineraryContext, Location } from '../../state'
-import { saveItinerary } from '../../actions'
+import { ItineraryContext, Location, TripLeg } from '../../state'
+// import { saveItinerary } from '../../actions'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import moment from 'moment'
 import { CreateTripLeg } from './createTripLeg'
 
 
@@ -43,16 +40,18 @@ const useStyles = makeStyles((theme) => ({
 interface MapMarkerState {
   origin: google.maps.places.PlaceResult
   destination: google.maps.places.PlaceResult
+  editedTripLeg: TripLeg
 }
 
-export interface MapMarkerContextType extends MapMarkerState {
-  setPlace: (place: Partial<MapMarkerState>) => void
+export interface MapContextType extends MapMarkerState {
+  setMapContext: (place: Partial<MapMarkerState>) => void
 }
 
-export const MapMarkerContext = React.createContext<MapMarkerContextType>({
+export const MapMarkerContext = React.createContext<MapContextType>({
   origin: null,
   destination: null,
-  setPlace: () => {}
+  editedTripLeg: null,
+  setMapContext: () => {}
 }) 
 
 interface ItineraryData {
@@ -71,14 +70,15 @@ export const CreateItinerary = () => {
   const { itineraryDispatch } = useContext(ItineraryContext)  
   const [mapMarkerState, setMapMarkerState] = useState<MapMarkerState>({
     origin: null,
-    destination: null
+    destination: null,
+    editedTripLeg: null
   })
 
   const saveForm = (itineraryData: ItineraryData) => {
     console.log(itineraryData);
   }
 
-  const setPlace = (place: Partial<MapMarkerState>) => {
+  const setMapContext = (place: Partial<MapMarkerState>) => {
     setMapMarkerState({
       ...mapMarkerState,
       ...place
@@ -108,7 +108,7 @@ export const CreateItinerary = () => {
               Create a trip segment
             </Typography>
           </Grid>
-          <MapMarkerContext.Provider value={{ ...mapMarkerState, setPlace }}>
+          <MapMarkerContext.Provider value={{ ...mapMarkerState, setMapContext }}>
             <CreateTripLeg register={register} />
           </MapMarkerContext.Provider>
           <Grid item xs={12}>

@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
-import Avatar from '@material-ui/core/Avatar';
-import { MapMarkerContext } from '../itinerary/createItinerary'
+import { MapMarkerContext, MapContextType } from '../itinerary/createItinerary'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
+import { convertPlaceToLocation } from '../../utils/directionsUtils';
 
 const useStyles = makeStyles((theme) => ({
   markerRoot: {
@@ -39,7 +39,7 @@ export const Marker = ({ place }: MarkerProps) => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const { setPlace } = useContext(MapMarkerContext)
+  const { origin, destination, setMapContext } = useContext(MapMarkerContext)
 
   // TODO: Turn into generic component
   const handleNavClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -51,9 +51,28 @@ export const Marker = ({ place }: MarkerProps) => {
   };
 
   const handleMenuSelection = (index: number) => {
-    setPlace({
+    const optionIsOrigin = options[index] === 'origin'
+    const initialState: Partial<MapContextType> =  {
       [options[index]]: place
-    })
+    }
+
+    const routeSelectionCompleted = origin && !destination
+    const routeOriginSelectionChanged = origin && origin?.name !== place.name &&  optionIsOrigin
+    const routeDestinationChanged = destination && destination?.name !== place.name && !optionIsOrigin
+    if (routeSelectionCompleted || routeOriginSelectionChanged || routeDestinationChanged) {
+      if (optionIsOrigin) {
+        initialState.editedTripLeg = {
+          origin: convertPlaceToLocation(place),
+          destination: convertPlaceToLocation(destination)
+        }
+      } else {
+        initialState.editedTripLeg = {
+          origin: convertPlaceToLocation(origin),
+          destination: convertPlaceToLocation(place)
+        }
+      }
+    }
+    setMapContext(initialState)
     setAnchorEl(null);
   };
 

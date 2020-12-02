@@ -8,6 +8,7 @@ import moment from 'moment'
 import { Map } from '../map/map'
 import { MapMarkerContext } from './createItinerary'
 import { TripLeg } from '../../state'
+import { convertDirectionResult, convertPlaceToLocation } from '../../utils/directionsUtils'
 
 const useStyles = makeStyles((theme) => ({
   dateForm: {
@@ -49,16 +50,19 @@ interface CreateTripLegProps {
 
 export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register }: CreateTripLegProps) => {
   const classes = useStyles()
-  const { origin, destination } = useContext(MapMarkerContext)
-  const [editedTripLeg, setEditedTripLeg] = useState<TripLeg>({
-    origin: origin ? { lat: origin.geometry.location.lat(), lng: origin.geometry.location.lng(), name: origin.name } : null,
-    destination: destination ? { lat: destination.geometry.location.lat(), lng: destination.geometry.location.lng(), name: destination.name } : null,
-  })
+  const { origin, destination, editedTripLeg, setMapContext } = useContext(MapMarkerContext)
 
   const defaultDate = new Date()  
 
   const onDirectionsResult = (result: google.maps.DirectionsResult) => {
-    
+    const newTripLeg = convertDirectionResult(
+      result,
+      {
+        origin: convertPlaceToLocation(origin),
+        destination: convertPlaceToLocation(destination)
+      }
+    )
+    setMapContext({ editedTripLeg: newTripLeg })
   }
 
   const drawnTripLegs = origin && destination ? [editedTripLeg] : []

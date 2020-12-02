@@ -20,3 +20,11 @@ export const convertDirectionResult = (result: google.maps.DirectionsResult, par
     overviewPolyline: route.overview_polyline
   }
 }
+
+export const convertPlaceToLocation = (place: google.maps.places.PlaceResult): Location => {
+  return {
+    lat: place.geometry.location.lat(),
+    lng: place.geometry.location.lng(),
+    name: place.name
+  }
+}
