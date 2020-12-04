@@ -32,4 +32,15 @@ export const saveItineraries = (itineraries: Itinerary[]): SaveIntinerariesActio
   }
 }
 
-export type ItineraryActions = SaveIntinerariesAction | SaveItineraryAction
+export interface SelectItinerary extends BaseAction<ItineraryActionTypes.SELECT_ITINERARY> {
+  payload: Itinerary
+}
+
+export const selectItinerary = (itinerary: Itinerary): SelectItinerary => {
+  return {
+    type: ItineraryActionTypes.SELECT_ITINERARY,
+    payload: itinerary
+  }
+}
+
+export type ItineraryActions = SaveIntinerariesAction | SaveItineraryAction | SelectItinerary

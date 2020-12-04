@@ -55,6 +55,12 @@ function itineraryReducer(state: ItineraryState, action: ItineraryActions): Itin
       itineraries.push(action.payload)
       return { itineraries, currentItinerary:  null }
     }
+    case ItineraryActionTypes.SELECT_ITINERARY: {
+      return {
+        ...state,
+        currentItinerary: action.payload
+      }
+    }
     default:
       return state
   }

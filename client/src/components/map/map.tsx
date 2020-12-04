@@ -79,13 +79,17 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
           console.log('blah');
           
           if (overviewPolyline?.length) {
-            const polygon: google.maps.Polygon = new mapsApi.current.Polygon({
-              paths: geometry.current.encoding.decodePath(overviewPolyline),
+            const paths: google.maps.LatLng[] = geometry.current.encoding.decodePath(overviewPolyline)
+            console.log(paths);
+            console.log(paths.slice(0, paths.length - 1));
+            
+            
+            const polygon: google.maps.Polygon = new mapsApi.current.Polyline({
+              path: paths.slice(0, paths.length - 1),
+              geodesic: true,
               strokeColor: '#FF0000',
               strokeOpacity: 0.8,
-              strokeWeight: 2,
-              fillColor: '#FF0000',
-              fillOpacity: 0.35
+              strokeWeight: 2
             })
   
             polygon.setMap(map.current)

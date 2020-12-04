@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -7,6 +7,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom'
+import { ItineraryContext } from '../../state'
+import { selectItinerary } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   itinPlannerRoot: {
@@ -19,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 export const ItineraryPlanner = () => {
   const classes = useStyles()
   const history = useHistory()
+  const { itineraries, itineraryDispatch } = useContext(ItineraryContext)
 
   const onNewClick = () => {
     history.push('/home/createItinerary')
@@ -33,12 +36,16 @@ export const ItineraryPlanner = () => {
           </ListItemIcon>
           <ListItemText primary="New Itinerary" />
         </ListItem>
-        <ListItem button divider>
-          <ListItemIcon>
-            <EditIcon />
-          </ListItemIcon>
-          <ListItemText primary="Edit Itinerary" />
-        </ListItem>
+        {
+          itineraries.map((itinerary) => (
+            <ListItem button divider onClick={() => itineraryDispatch(selectItinerary(itinerary))} key={itinerary._id}>
+              <ListItemIcon>
+                <EditIcon />
+              </ListItemIcon>
+              <ListItemText primary={itinerary.title} />
+            </ListItem>
+          ))
+        }
       </List>
     </div>
   )

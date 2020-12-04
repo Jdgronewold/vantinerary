@@ -11,9 +11,11 @@ import { PrivateRoute } from '../routes/privateRoute';
 import { CreateNote } from '../stickyNotes/createNote'
 import { EditNote } from '../stickyNotes/editNote'
 import { DisplayNote } from '../stickyNotes/displayNote';
-import { AppContext } from '../../state';
+import { AppContext, ItineraryContext } from '../../state';
 import { Map } from '../map/map'
 import { CreateItinerary } from '../itinerary/createItinerary'
+import { fetchItineraries } from '../../services/itineraryService';
+import { saveItineraries } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
     homepage: {
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MainCalendarPage = () => {
   const classes = useStyles()
-  const { currentNote } = useContext(NoteContext)
+  const { currentNote, notesDispatch } = useContext(NoteContext)
 
   return (
     <>
@@ -58,9 +60,11 @@ const MainCalendarPage = () => {
 
 const MainMapPage = () => {
   const classes = useStyles()
+  const { currentItinerary } = useContext(ItineraryContext)
+
   return (
     <div className={classes.mapRoot}>
-      <Map tripLegs={[]} shouldShowPlanner={true} />
+      <Map tripLegs={currentItinerary?.tripLegs || []} shouldShowPlanner={true} />
     </div>
     
   )
@@ -68,17 +72,19 @@ const MainMapPage = () => {
 
 export const HomePage = () => {
   const classes = useStyles()
-  const { notesDispatch } = useContext(NoteContext)
   const { mainView } = useContext(AppContext)
+  const { notesDispatch } = useContext(NoteContext)
+  const { itineraryDispatch } = useContext(ItineraryContext)
 
   useEffect(() => {
-    
+    fetchItineraries().then((itiniraries) => {
+      itineraryDispatch(saveItineraries(itiniraries))
+    })
+
     getNotes().then((notes) => {
       notesDispatch(saveNotes(notes))
     })
-  }, [notesDispatch])
-
-
+  }, [])
 
   return (
     <div className={classes.homepage}>

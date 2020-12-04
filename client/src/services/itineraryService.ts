@@ -13,3 +13,9 @@ export const saveItinerary = (newItinerary: Itinerary) => {
   })
 }
 
+export const fetchItineraries = (): Promise<Itinerary[]> => {
+  return axios.get(BASE_PATH, { headers: getAuthHeader() }).then((response: AxiosResponse<Itinerary[]>) => {
+    return response.data
+  })
+}
+
