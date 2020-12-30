@@ -43,4 +43,15 @@ export const selectItinerary = (itinerary: Itinerary): SelectItinerary => {
   }
 }
 
-export type ItineraryActions = SaveIntinerariesAction | SaveItineraryAction | SelectItinerary
+export interface DeleteItineraryAction extends BaseAction<ItineraryActionTypes.DELETE_ITINERARY> {
+  payload: string
+}
+
+export const deleteItinerary = (itineraryId: string): DeleteItineraryAction => {
+  return {
+    type: ItineraryActionTypes.DELETE_ITINERARY,
+    payload: itineraryId
+  }
+}
+
+export type ItineraryActions = SaveIntinerariesAction | SaveItineraryAction | SelectItinerary | DeleteItineraryAction

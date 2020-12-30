@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { itineraryModel } from '../Models'
 import { IController, Itinerary, IRequestWithUser } from '../Types'
-import { authMiddleware } from '../Middleware'
+import { authMiddleware , DeleteItineraryUnsuccessfulException} from '../Middleware'
 
 export class ItineraryController implements IController {
     public path = '/itinerary'
@@ -15,6 +15,7 @@ export class ItineraryController implements IController {
     public intializeRoutes() {
       this.router.get(`${this.path}`, authMiddleware, this.getAllItineraries)
       this.router.post(`${this.path}`, authMiddleware, this.createItinerary)
+      this.router.delete(`${this.path}`, authMiddleware, this.deleteItinerary)
     }
 
     getAllItineraries = (request: IRequestWithUser, response: express.Response) => {
@@ -29,18 +30,9 @@ export class ItineraryController implements IController {
       const itinerary: Itinerary = request.body
       const { user } = request
       if (user) {
-        console.log('');
-        console.log('');
-        console.log(itinerary);
-        
+  
         itinerary.authorId = user._id
-        console.log('');
-        console.log('');
         const createdItinerary = new itineraryModel(itinerary)
-        
-        console.log(createdItinerary);
-        console.log('');
-        console.log('');
         
         const itineraryPromise = createdItinerary.save()
         user.itineraryIds.push(createdItinerary._id)
@@ -52,5 +44,31 @@ export class ItineraryController implements IController {
             response.send(savedItinerary)
         })
       }
+    }
+
+    deleteItinerary = (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
+      const itineraryIDFromRequest: string = request.body.id
+      const { user } = request
+        
+      if (user) {
+        itineraryModel.findById(itineraryIDFromRequest, (err, itinerary) => {
+            
+          if (itinerary) {
+            const itineraryPromise = itinerary.remove()
+            const userItineraryIDIndex = user.itineraryIds.findIndex((itineraryID) => itineraryID === itineraryIDFromRequest)
+            user.itineraryIds.splice(userItineraryIDIndex, 1)
+            const userPromise = user.save()
+
+            Promise.all([itineraryPromise, userPromise]).then(([deletedItinerary]) => {
+              response.send(deletedItinerary)
+            })
+          } else {
+            next(new DeleteItineraryUnsuccessfulException())
+          }
+        })
+      } else {
+        next(new DeleteItineraryUnsuccessfulException())
+      }
+        
     }
 }

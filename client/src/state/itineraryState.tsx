@@ -61,6 +61,15 @@ function itineraryReducer(state: ItineraryState, action: ItineraryActions): Itin
         currentItinerary: action.payload
       }
     }
+    case ItineraryActionTypes.DELETE_ITINERARY: {
+      const itineraryIndex = state.itineraries.findIndex((itinerary) => itinerary._id === action.payload)
+      const newItineraries = state.itineraries.slice()
+      newItineraries.splice(itineraryIndex, 1)
+      return {
+        ...state,
+        itineraries: newItineraries
+      }
+    }
     default:
       return state
   }

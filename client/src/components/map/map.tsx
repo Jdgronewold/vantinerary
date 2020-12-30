@@ -71,28 +71,28 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
       console.log('loaded', tripLegs);
       
       tripLegs.forEach(({ overviewPolyline, destination, origin }: TripLeg) => {
-        console.log(overviewPolyline);
-        console.log(map.current)
         const tripLegRendered = !!directionsRenderer.current.getDirections()?.routes.find((r: google.maps.DirectionsRoute) => r.overview_polyline === overviewPolyline)
 
         if (!tripLegRendered) {
-          console.log('blah');
           
           if (overviewPolyline?.length) {
             const paths: google.maps.LatLng[] = geometry.current.encoding.decodePath(overviewPolyline)
-            console.log(paths);
-            console.log(paths.slice(0, paths.length - 1));
             
-            
-            const polygon: google.maps.Polygon = new mapsApi.current.Polyline({
+            const polyline: google.maps.Polyline = new mapsApi.current.Polyline({
               path: paths.slice(0, paths.length - 1),
               geodesic: true,
               strokeColor: '#FF0000',
               strokeOpacity: 0.8,
               strokeWeight: 2
             })
-  
-            polygon.setMap(map.current)
+
+            var bounds = new google.maps.LatLngBounds()
+            polyline.getPath().forEach((element) => bounds.extend(element))
+          
+            console.log(polyline.getPath());
+            
+            polyline.setMap(map.current)
+            map.current.fitBounds(bounds)
   
           } else {
             const request: google.maps.DirectionsRequest = {

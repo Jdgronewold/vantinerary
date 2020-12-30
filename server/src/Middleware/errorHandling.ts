@@ -53,6 +53,12 @@ export class DeleteNoteUnsuccessfulException extends HttpException {
   }
 }
 
+export class DeleteItineraryUnsuccessfulException extends HttpException {
+  constructor() {
+    super(400, 'Itinerary deletion was not successful')
+  }
+}
+
 export class EditNoteUnsuccessfulException extends HttpException {
   constructor() {
     super(400, 'Note edit was not successful')

@@ -49,6 +49,12 @@ class DeleteNoteUnsuccessfulException extends HttpException {
     }
 }
 exports.DeleteNoteUnsuccessfulException = DeleteNoteUnsuccessfulException;
+class DeleteItineraryUnsuccessfulException extends HttpException {
+    constructor() {
+        super(400, 'Itinerary deletion was not successful');
+    }
+}
+exports.DeleteItineraryUnsuccessfulException = DeleteItineraryUnsuccessfulException;
 class EditNoteUnsuccessfulException extends HttpException {
     constructor() {
         super(400, 'Note edit was not successful');

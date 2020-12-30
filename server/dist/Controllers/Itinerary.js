@@ -26,16 +26,8 @@ class ItineraryController {
             const itinerary = request.body;
             const { user } = request;
             if (user) {
-                console.log('');
-                console.log('');
-                console.log(itinerary);
                 itinerary.authorId = user._id;
-                console.log('');
-                console.log('');
                 const createdItinerary = new Models_1.itineraryModel(itinerary);
-                console.log(createdItinerary);
-                console.log('');
-                console.log('');
                 const itineraryPromise = createdItinerary.save();
                 user.itineraryIds.push(createdItinerary._id);
                 const userPromise = user.save();
@@ -44,11 +36,35 @@ class ItineraryController {
                 });
             }
         };
+        this.deleteItinerary = (request, response, next) => {
+            const itineraryIDFromRequest = request.body.id;
+            const { user } = request;
+            if (user) {
+                Models_1.itineraryModel.findById(itineraryIDFromRequest, (err, itinerary) => {
+                    if (itinerary) {
+                        const itineraryPromise = itinerary.remove();
+                        const userItineraryIDIndex = user.itineraryIds.findIndex((itineraryID) => itineraryID === itineraryIDFromRequest);
+                        user.itineraryIds.splice(userItineraryIDIndex, 1);
+                        const userPromise = user.save();
+                        Promise.all([itineraryPromise, userPromise]).then(([deletedItinerary]) => {
+                            response.send(deletedItinerary);
+                        });
+                    }
+                    else {
+                        next(new Middleware_1.DeleteItineraryUnsuccessfulException());
+                    }
+                });
+            }
+            else {
+                next(new Middleware_1.DeleteItineraryUnsuccessfulException());
+            }
+        };
         this.intializeRoutes();
     }
     intializeRoutes() {
         this.router.get(`${this.path}`, Middleware_1.authMiddleware, this.getAllItineraries);
         this.router.post(`${this.path}`, Middleware_1.authMiddleware, this.createItinerary);
+        this.router.delete(`${this.path}`, Middleware_1.authMiddleware, this.deleteItinerary);
     }
 }
 exports.ItineraryController = ItineraryController;

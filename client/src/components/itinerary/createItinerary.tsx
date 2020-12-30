@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import { useForm } from "react-hook-form"
 import { Itinerary, ItineraryContext, Location, TripLeg } from '../../state'
-// import { saveItinerary } from '../../actions'
+import { saveItinerary as storeItinerary} from '../../actions'
 import { saveItinerary } from '../../services/itineraryService'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -80,7 +80,9 @@ export const CreateItinerary = () => {
       notes: itineraryData.notes
     }
 
-    saveItinerary(newItinerary)
+    saveItinerary(newItinerary).then((itinerary: Itinerary) => {
+      storeItinerary(itinerary)
+    })
   }
 
   const setMapContext = (place: Partial<MapMarkerState>) => {

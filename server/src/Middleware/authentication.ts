@@ -14,11 +14,11 @@ export async function authMiddleware(request: IRequestWithUser, response: Respon
     try {      
       const verificationResponse = jwt.verify(token, secret) as IDataStoredInToken;
       const id = verificationResponse._id;   
-      const user = await userModel.findById(id);      
+      const user = await userModel.findById(id);  
       if (user) {
         request.user = user;
         next();
-      } else {
+      } else {        
         next(new WrongAuthenticationTokenException());
       }
     } catch (error) {      
