@@ -8,7 +8,7 @@ import moment from 'moment'
 import { Map } from '../map/map'
 import { MapMarkerContext } from './createItinerary'
 import { TripLeg } from '../../state'
-import { convertDirectionResult, convertPlaceToLocation } from '../../utils/directionsUtils'
+import { convertDirectionResult, convertPlaceToLocation, createItinerary } from '../../utils/directionsUtils'
 
 const useStyles = makeStyles((theme) => ({
   dateForm: {
@@ -71,7 +71,9 @@ export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register, watch }:
     setMapContext({ editedTripLeg: newTripLeg })
   }
 
-  const drawnTripLegs = useMemo(() => origin && destination ? [editedTripLeg] : [], [origin, destination])
+  const partialItinerary = useMemo(() => createItinerary({
+    tripLegs: origin && destination ? [editedTripLeg] : []
+  }), [origin, destination, editedTripLeg])
 
   return (
     <Grid container>
@@ -164,7 +166,7 @@ export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register, watch }:
       <Grid container item xs={8} direction='row'>
         <Grid item xs={12} className={classes.mapRoot}>
           <Map
-            tripLegs={drawnTripLegs}
+            itinerary={partialItinerary}
             shouldAllowSearch
             shouldShowPlanner={false}
             onDirectionsResult={onDirectionsResult}

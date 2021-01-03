@@ -64,7 +64,7 @@ const MainMapPage = () => {
 
   return (
     <div className={classes.mapRoot}>
-      <Map tripLegs={currentItinerary?.tripLegs || []} shouldShowPlanner={true} />
+      <Map itinerary={currentItinerary} shouldShowPlanner={true} />
     </div>
     
   )

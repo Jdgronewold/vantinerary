@@ -67,6 +67,7 @@ function itineraryReducer(state: ItineraryState, action: ItineraryActions): Itin
       newItineraries.splice(itineraryIndex, 1)
       return {
         ...state,
+        currentItinerary: null,
         itineraries: newItineraries
       }
     }

@@ -10,6 +10,8 @@ import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { CreateTripLeg } from './createTripLeg'
+import { useHistory } from 'react-router-dom'
+import { createItinerary } from '../../utils/directionsUtils'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +67,8 @@ interface ItineraryData {
 export const CreateItinerary = () => {
   const classes = useStyles()
   const { register, handleSubmit, watch } = useForm()
-  const { itineraryDispatch } = useContext(ItineraryContext)  
+  const { itineraryDispatch } = useContext(ItineraryContext)
+  const history = useHistory()
   const [mapMarkerState, setMapMarkerState] = useState<MapMarkerState>({
     origin: null,
     destination: null,
@@ -74,14 +77,17 @@ export const CreateItinerary = () => {
 
   const saveForm = (itineraryData: ItineraryData) => {
     // TODO add validation here!
-    const newItinerary: Itinerary = {
+    const newItinerary: Itinerary = createItinerary({
       tripLegs: [mapMarkerState.editedTripLeg],
       title: itineraryData.title,
       notes: itineraryData.notes
-    }
+    })
 
     saveItinerary(newItinerary).then((itinerary: Itinerary) => {
-      storeItinerary(itinerary)
+      itineraryDispatch(storeItinerary(itinerary))
+      console.log('pushing to home');
+      
+      history.push('/home')
     })
   }
 

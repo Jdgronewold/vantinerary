@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import { ItineraryPlanner } from '../itinerary/itineraryPlanner'
 import FilledInput from '@material-ui/core/FilledInput'
-import { TripLeg } from '../../state'
+import { Itinerary, TripLeg } from '../../state'
 import { Marker } from './marker'
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface MapProps {
-  tripLegs: TripLeg[]
+  itinerary: Itinerary
   shouldAllowSearch?: boolean
   shouldShowPlanner?: boolean
   onDirectionsResult?: (result: google.maps.DirectionsResult) => void
@@ -39,12 +39,13 @@ interface MapProps {
 
 
 
-export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, shouldShowPlanner = false, onDirectionsResult  }) => {
+export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, shouldShowPlanner = false, onDirectionsResult  }) => {
   const [mapIsLoaded, setMapLoaded] = useState(false)
   const [currentMarker, setCurrentMarker] = useState<google.maps.places.PlaceResult>(null)
   const searchBoxRef = useRef()
   const directionsService = useRef<google.maps.DirectionsService>(null)
   const directionsRenderer = useRef<google.maps.DirectionsRenderer>(null)
+  const drawnPolylines = useRef<google.maps.Polyline[]>([])
   const searchBox = useRef<google.maps.places.SearchBox>(null)
   const map = useRef<google.maps.Map>(null)
   const mapsApi = useRef<any>(null)
@@ -67,7 +68,14 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
   }
 
   useEffect(() => {
-    if (mapIsLoaded) {
+    if ((!itinerary || !itinerary?.tripLegs.length) && drawnPolylines.current.length) {
+      drawnPolylines.current.forEach((polyline) => {
+        polyline.setMap(null)
+      })
+    }
+
+    if (mapIsLoaded && itinerary) {
+      const { tripLegs } = itinerary
       console.log('loaded', tripLegs);
       
       tripLegs.forEach(({ overviewPolyline, destination, origin }: TripLeg) => {
@@ -93,6 +101,7 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
             
             polyline.setMap(map.current)
             map.current.fitBounds(bounds)
+            drawnPolylines.current.push(polyline)
   
           } else {
             const request: google.maps.DirectionsRequest = {
@@ -115,7 +124,7 @@ export const Map: React.FC<MapProps> = ({ tripLegs, shouldAllowSearch = false, s
         }
       })
     }
-  }, [mapIsLoaded, tripLegs])
+  }, [mapIsLoaded, itinerary])
 
   return (
     <div className={classes.mapRoot}>

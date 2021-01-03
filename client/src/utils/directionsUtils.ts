@@ -1,4 +1,4 @@
-import { Location, TripLeg } from "../state";
+import { Itinerary, Location, TripLeg } from "../state";
 
 export const convertDirectionResult = (result: google.maps.DirectionsResult, partialTripLeg: TripLeg): TripLeg => {
   const route: google.maps.DirectionsRoute = result.routes[0]
@@ -26,5 +26,15 @@ export const convertPlaceToLocation = (place: google.maps.places.PlaceResult): L
     lat: place.geometry.location.lat(),
     lng: place.geometry.location.lng(),
     name: place.name
+  }
+}
+
+export const createItinerary = (partialItinerary: Partial<Itinerary>): Itinerary => {
+  return {
+    authorId: '',
+    tripLegs: [],
+    title: '',
+    notes: '',
+    ...partialItinerary
   }
 }

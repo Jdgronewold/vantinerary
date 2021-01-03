@@ -34,7 +34,7 @@ export const ItineraryPlanner = () => {
 
   const onDelete = (itineraryId: string) => {
     deleteItinerary(itineraryId).then((itinerary: Itinerary) => {
-      removeItinerary(itinerary._id)
+      itineraryDispatch(removeItinerary(itinerary._id))
     })
   }
 
