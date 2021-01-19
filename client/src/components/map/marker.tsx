@@ -67,7 +67,7 @@ export const Marker = ({ place }: MarkerProps) => {
       if (optionIsOrigin) {
         initialState.editedTripLeg = {
           origin: convertPlaceToLocation(place),
-          destination: convertPlaceToLocation(destination)
+          destination: destination ? convertPlaceToLocation(destination) : null
         }
       } else {
         initialState.editedTripLeg = {

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import { useForm } from "react-hook-form"
 import { Itinerary, ItineraryContext, Location, TripLeg } from '../../state'
-import { saveItinerary as storeItinerary} from '../../actions'
+import { saveItinerary as storeItinerary, selectItinerary} from '../../actions'
 import { saveItinerary } from '../../services/itineraryService'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -85,6 +85,7 @@ export const CreateItinerary = () => {
 
     saveItinerary(newItinerary).then((itinerary: Itinerary) => {
       itineraryDispatch(storeItinerary(itinerary))
+      itineraryDispatch(selectItinerary(itinerary))
       console.log('pushing to home');
       
       history.push('/home')

@@ -68,15 +68,16 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
   }
 
   useEffect(() => {
-    if ((!itinerary || !itinerary?.tripLegs.length) && drawnPolylines.current.length) {
-      drawnPolylines.current.forEach((polyline) => {
-        polyline.setMap(null)
-      })
-    }
+    
+    drawnPolylines.current.forEach((polyline) => {
+      // clear out any current polylines
+      polyline.setMap(null)
+      drawnPolylines.current = []
+    })
+    
 
     if (mapIsLoaded && itinerary) {
       const { tripLegs } = itinerary
-      console.log('loaded', tripLegs);
       
       tripLegs.forEach(({ overviewPolyline, destination, origin }: TripLeg) => {
         const tripLegRendered = !!directionsRenderer.current.getDirections()?.routes.find((r: google.maps.DirectionsRoute) => r.overview_polyline === overviewPolyline)
@@ -96,9 +97,7 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
 
             var bounds = new google.maps.LatLngBounds()
             polyline.getPath().forEach((element) => bounds.extend(element))
-          
-            console.log(polyline.getPath());
-            
+                      
             polyline.setMap(map.current)
             map.current.fitBounds(bounds)
             drawnPolylines.current.push(polyline)
