@@ -6,6 +6,7 @@ import { ItineraryPlanner } from '../itinerary/itineraryPlanner'
 import FilledInput from '@material-ui/core/FilledInput'
 import { Itinerary, TripLeg } from '../../state'
 import { Marker } from './marker'
+import { mapColorArray } from '../../utils/directionsUtils'
 
 const useStyles = makeStyles((theme) => ({
   mapRoot: {
@@ -68,13 +69,6 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
 
   useEffect(() => {
     
-    // drawnPolylines.current.forEach((polyline) => {
-    //   // clear out any current polylines
-    //   polyline.setMap(null)
-    //   drawnPolylines.current = []
-    // })
-    
-
     if (mapIsLoaded && itinerary) {
       const { tripLegs } = itinerary
       console.log(itinerary);
@@ -86,7 +80,7 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
         }
       })
       
-      tripLegs.forEach(({ overviewPolyline }: TripLeg) => {
+      tripLegs.forEach(({ overviewPolyline }: TripLeg, index: number) => {
         const tripLegRendered = !!drawnPolylines.current[overviewPolyline]
         
         if (!tripLegRendered) {
@@ -97,16 +91,12 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
             const polyline: google.maps.Polyline = new mapsApi.current.Polyline({
               path: paths.slice(0, paths.length - 1),
               geodesic: true,
-              strokeColor: '#FF0000',
+              strokeColor: mapColorArray[index % mapColorArray.length],
               strokeOpacity: 0.8,
               strokeWeight: 2
             })
 
-            // var bounds = new google.maps.LatLngBounds()
-            // polyline.getPath().forEach((element) => bounds.extend(element))
-                      
             polyline.setMap(map.current)
-            // map.current.fitBounds(bounds)
             drawnPolylines.current[overviewPolyline] = polyline
   
           }

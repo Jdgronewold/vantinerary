@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { flexStyles } from '../../utils/styleUtils'
 import { useForm } from "react-hook-form"
-import { Itinerary, ItineraryContext, Location, TripLeg } from '../../state'
-import { saveItinerary as storeItinerary, selectItinerary} from '../../actions'
-import { saveItinerary } from '../../services/itineraryService'
+import { Itinerary, ItineraryContext, TripLeg } from '../../state'
+import { saveItinerary as storeItinerary, selectItinerary, editItinerary as storeEditedItinerary} from '../../actions'
+import { saveItinerary, editItinerary } from '../../services/itineraryService'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
@@ -64,7 +64,11 @@ export const MapMarkerContext = React.createContext<MapContextType>({
   setMapContext: () => {},
   map: null,
   mapApi: null
-}) 
+})
+
+interface CreateAndEditItineraryProps {
+  isEditing: boolean
+}
 
 interface ItineraryData {
   title: string,
@@ -73,33 +77,50 @@ interface ItineraryData {
   notes: string
 }
 
-export const CreateItinerary = () => {
+export const CreateAndEditItinerary: React.FC<CreateAndEditItineraryProps> = ({ isEditing }) => {
   const classes = useStyles()
   const { register, handleSubmit, watch } = useForm()
-  const { itineraryDispatch } = useContext(ItineraryContext)
+  const { itineraryDispatch, currentItinerary } = useContext(ItineraryContext)
   const history = useHistory()
   const [mapMarkerState, setMapMarkerState] = useState<MapMarkerState>({
     origin: null,
     destination: null,
-    tripLegs: [],
+    tripLegs: isEditing ? currentItinerary.tripLegs : [],
     map: null,
     mapApi: null
   })
 
   const saveForm = (itineraryData: ItineraryData) => {
     // TODO add validation here!
-    const newItinerary: Itinerary = createItinerary({
-      tripLegs: mapMarkerState.tripLegs,
-      title: itineraryData.title,
-      notes: itineraryData.notes
-    })
+    if (isEditing) {
+      const newItinerary: Itinerary = {
+        ...currentItinerary,
+        tripLegs: mapMarkerState.tripLegs,
+        title: itineraryData.title,
+        notes: itineraryData.notes
+      }
 
-    saveItinerary(newItinerary).then((itinerary: Itinerary) => {
-      itineraryDispatch(storeItinerary(itinerary))
-      itineraryDispatch(selectItinerary(itinerary))
+      editItinerary(newItinerary).then((itinerary) => {
+        itineraryDispatch(storeEditedItinerary(itinerary))
+        itineraryDispatch(selectItinerary(itinerary))
+
+        history.push('/home')
+      })
+
+    } else {
+      const newItinerary: Itinerary = createItinerary({
+        tripLegs: mapMarkerState.tripLegs,
+        title: itineraryData.title,
+        notes: itineraryData.notes
+      })
+
+      saveItinerary(newItinerary).then((itinerary: Itinerary) => {
+        itineraryDispatch(storeItinerary(itinerary))
+        itineraryDispatch(selectItinerary(itinerary))
       
-      history.push('/home')
-    })
+        history.push('/home')
+      })
+    }
   }
 
   const setMapContext = (place: Partial<MapMarkerState>) => {
@@ -127,9 +148,10 @@ export const CreateItinerary = () => {
               variant="outlined"
               fullWidth
               id="title"
-              label="Title (optional)"
+              label="Title"
               inputRef={register}
               name="title"
+              defaultValue={ isEditing ? currentItinerary.title : '' }
             />
           </Grid>
           <Grid item xs={10}>
@@ -174,6 +196,7 @@ export const CreateItinerary = () => {
               id="notes"
               rows={5}
               multiline
+              defaultValue={ isEditing ? currentItinerary.notes : '' }
             />
           </Grid>
         </Grid>

@@ -38,3 +38,10 @@ export const createItinerary = (partialItinerary: Partial<Itinerary>): Itinerary
     ...partialItinerary
   }
 }
+
+export const mapColorArray = [
+  'red', 'blue', 'aqua', 'darkviolet',
+  'forestgreen', 'salmon', 'firebrick',
+  'darkblue', 'forestgreen', 'darkmagenta',
+  'crimson', 'blueviolet', 'hotpink' 
+]

@@ -1,12 +1,11 @@
 import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
-import { MapMarkerContext, MapContextType } from '../itinerary/createItinerary'
+import { MapMarkerContext, MapContextType } from '../itinerary/createAndEditItinerary'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import { convertPlaceToLocation } from '../../utils/directionsUtils';
 
 const useStyles = makeStyles((theme) => ({
   markerRoot: {

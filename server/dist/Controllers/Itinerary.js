@@ -36,6 +36,27 @@ class ItineraryController {
                 });
             }
         };
+        this.editItinerary = (request, response, next) => {
+            const itineraryFromRequest = request.body;
+            const { user } = request;
+            if (user) {
+                Models_1.itineraryModel.findById(itineraryFromRequest._id, (err, itinerary) => {
+                    if (itinerary) {
+                        itinerary.notes = itineraryFromRequest.notes;
+                        itinerary.tripLegs = itineraryFromRequest.tripLegs;
+                        itinerary.title = itineraryFromRequest.title;
+                        itinerary.save();
+                        response.send(itinerary);
+                    }
+                    else {
+                        next(new Middleware_1.EditItineraryUnsuccessfulException());
+                    }
+                });
+            }
+            else {
+                next(new Middleware_1.EditItineraryUnsuccessfulException());
+            }
+        };
         this.deleteItinerary = (request, response, next) => {
             const itineraryIDFromRequest = request.body.id;
             const { user } = request;
@@ -65,6 +86,7 @@ class ItineraryController {
         this.router.get(`${this.path}`, Middleware_1.authMiddleware, this.getAllItineraries);
         this.router.post(`${this.path}`, Middleware_1.authMiddleware, this.createItinerary);
         this.router.delete(`${this.path}`, Middleware_1.authMiddleware, this.deleteItinerary);
+        this.router.put(`${this.path}`, Middleware_1.authMiddleware, this.editItinerary);
     }
 }
 exports.ItineraryController = ItineraryController;

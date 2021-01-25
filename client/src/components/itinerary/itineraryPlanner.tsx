@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -38,6 +38,18 @@ export const ItineraryPlanner = () => {
     })
   }
 
+  const onSelect = (itinerary: Itinerary) => () => {
+    if (itinerary === currentItinerary) {
+      itineraryDispatch(selectItinerary(null))
+    } else {
+      itineraryDispatch(selectItinerary(itinerary))
+    }
+  }
+
+  const onEdit = () => {
+    history.push('/home/editItinerary')
+  }
+
   return (
     <div className={classes.itinPlannerRoot}>
       <List component="nav" aria-label="main">
@@ -50,7 +62,7 @@ export const ItineraryPlanner = () => {
         {
           itineraries.map((itinerary) => (
             <div  key={itinerary._id}>
-              <ListItem button divider onClick={() => itineraryDispatch(selectItinerary(itinerary))}>
+              <ListItem button divider onClick={onSelect(itinerary)}>
                 <ListItemIcon>
                   <EditIcon />
                 </ListItemIcon>
@@ -58,7 +70,7 @@ export const ItineraryPlanner = () => {
               </ListItem>
               <Collapse in={currentItinerary?._id === itinerary?._id}>
                 <List component="div" disablePadding>
-                  <ListItem button className={classes.nested}>
+                  <ListItem button className={classes.nested} onClick={onEdit}>
                     <ListItemText primary='Edit' />
                   </ListItem>
                   <ListItem button className={classes.nested} onClick={() => onDelete(itinerary._id)}>

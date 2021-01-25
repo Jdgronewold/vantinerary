@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { itineraryModel } from '../Models'
 import { IController, Itinerary, IRequestWithUser } from '../Types'
-import { authMiddleware , DeleteItineraryUnsuccessfulException} from '../Middleware'
+import { authMiddleware , DeleteItineraryUnsuccessfulException, EditItineraryUnsuccessfulException} from '../Middleware'
 
 export class ItineraryController implements IController {
     public path = '/itinerary'
@@ -16,6 +16,7 @@ export class ItineraryController implements IController {
       this.router.get(`${this.path}`, authMiddleware, this.getAllItineraries)
       this.router.post(`${this.path}`, authMiddleware, this.createItinerary)
       this.router.delete(`${this.path}`, authMiddleware, this.deleteItinerary)
+      this.router.put(`${this.path}`, authMiddleware, this.editItinerary)
     }
 
     getAllItineraries = (request: IRequestWithUser, response: express.Response) => {
@@ -43,6 +44,27 @@ export class ItineraryController implements IController {
         Promise.all([itineraryPromise, userPromise]).then(([savedItinerary]) => {
             response.send(savedItinerary)
         })
+      }
+    }
+
+    editItinerary = (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
+      const itineraryFromRequest: Itinerary = request.body
+      const { user } = request
+      if (user) {
+        itineraryModel.findById(itineraryFromRequest._id, (err, itinerary) => {
+          
+          if (itinerary) {
+            itinerary.notes = itineraryFromRequest.notes
+            itinerary.tripLegs = itineraryFromRequest.tripLegs
+            itinerary.title = itineraryFromRequest.title
+            itinerary.save()
+            response.send(itinerary)
+          } else {
+            next(new EditItineraryUnsuccessfulException())
+          }
+        })
+      } else {
+        next(new EditItineraryUnsuccessfulException())
       }
     }
 

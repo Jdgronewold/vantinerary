@@ -71,6 +71,15 @@ function itineraryReducer(state: ItineraryState, action: ItineraryActions): Itin
         itineraries: newItineraries
       }
     }
+    case ItineraryActionTypes.EDIT_ITINERARY: {
+      const itineraryIndex = state.itineraries.findIndex((itinerary) => itinerary._id === action.payload._id)
+      const newItineraries = state.itineraries.slice()
+      newItineraries.splice(itineraryIndex, 1, action.payload)
+      return {
+        ...state,
+        itineraries: newItineraries
+      }
+    }
     default:
       return state
   }

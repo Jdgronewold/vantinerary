@@ -13,7 +13,7 @@ import { EditNote } from '../stickyNotes/editNote'
 import { DisplayNote } from '../stickyNotes/displayNote';
 import { AppContext, ItineraryContext } from '../../state';
 import { Map } from '../map/map'
-import { CreateItinerary } from '../itinerary/createItinerary'
+import { CreateAndEditItinerary } from '../itinerary/createAndEditItinerary'
 import { fetchItineraries } from '../../services/itineraryService';
 import { saveItineraries } from '../../actions'
 
@@ -98,7 +98,8 @@ export const HomePage = () => {
             }
           </PrivateRoute>
           <PrivateRoute path='/home/createNote'><CreateNote/></PrivateRoute>
-          <PrivateRoute path='/home/createItinerary'> <CreateItinerary /> </PrivateRoute>
+          <PrivateRoute path='/home/createItinerary'> <CreateAndEditItinerary isEditing={false} /> </PrivateRoute>
+          <PrivateRoute path='/home/editItinerary'> <CreateAndEditItinerary isEditing={true} /> </PrivateRoute>
           <PrivateRoute path='/home/editNote'><EditNote/></PrivateRoute>
         </Switch>
       </div>

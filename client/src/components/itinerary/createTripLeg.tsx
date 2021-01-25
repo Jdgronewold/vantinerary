@@ -6,9 +6,8 @@ import Grid from '@material-ui/core/Grid'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import moment from 'moment'
 import { Map } from '../map/map'
-import { MapMarkerContext } from './createItinerary'
+import { MapMarkerContext } from './createAndEditItinerary'
 import Button from '@material-ui/core/Button'
-import { TripLeg } from '../../state'
 import { convertDirectionResult, convertPlaceToLocation, createItinerary } from '../../utils/directionsUtils'
 
 const useStyles = makeStyles((theme) => ({

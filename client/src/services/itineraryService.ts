@@ -31,3 +31,11 @@ export const deleteItinerary = (itineraryId: string) => {
   })
 }
 
+export const editItinerary = (itinerary: Itinerary): Promise<Itinerary> => {
+  return axios.put(BASE_PATH, itinerary, { headers: getAuthHeader() }).then((response : AxiosResponse<Itinerary>) => {
+    return {
+      ...response.data
+    }
+  })
+}
+
