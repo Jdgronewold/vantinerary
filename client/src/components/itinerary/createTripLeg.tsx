@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import moment from 'moment'
 import { Map } from '../map/map'
 import { MapMarkerContext } from './createItinerary'
+import Button from '@material-ui/core/Button'
 import { TripLeg } from '../../state'
 import { convertDirectionResult, convertPlaceToLocation, createItinerary } from '../../utils/directionsUtils'
 
@@ -42,7 +43,11 @@ const useStyles = makeStyles((theme) => ({
     width: 400,
     ...flexStyles({}),
     paddingTop: theme.spacing(2)
-  }
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+    width: '80%'
+  },
 }))
 
 interface CreateTripLegProps {
@@ -52,28 +57,50 @@ interface CreateTripLegProps {
 
 export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register, watch }: CreateTripLegProps) => {
   const classes = useStyles()
-  const { origin, destination, editedTripLeg, setMapContext } = useContext(MapMarkerContext)
+  const { origin, destination, tripLegs, map, mapApi, setMapContext } = useContext(MapMarkerContext)
   const startDate = watch('startDate') as Date
   const endDate = watch('endDate') as Date
 
   const defaultDate = new Date()  
 
-  const onDirectionsResult = (result: google.maps.DirectionsResult) => {
-    const newTripLeg = convertDirectionResult(
-      result,
-      {
-        origin: convertPlaceToLocation(origin),
-        destination: convertPlaceToLocation(destination),
-        arrivalDate: endDate,
-        departureDate: startDate
-      }
-    )
-    setMapContext({ editedTripLeg: newTripLeg })
-  }
-
   const partialItinerary = useMemo(() => createItinerary({
-    tripLegs: origin && destination ? [editedTripLeg] : []
-  }), [origin, destination, editedTripLeg])
+    tripLegs
+  }), [tripLegs])
+
+  const updateContext = useMemo(() => (map: google.maps.Map, mapApi: any) => {
+    setMapContext({ map, mapApi })
+  }, [])
+
+  const saveTripLeg = useMemo(() => (event: React.MouseEvent) => {
+    event.preventDefault()
+    if (!map && !mapApi) {
+      alert('Map has not loaded!')
+    } else {
+      const request: google.maps.DirectionsRequest = {
+        destination: convertPlaceToLocation(destination),
+        origin: convertPlaceToLocation(origin),
+        travelMode: google.maps.TravelMode.DRIVING
+      }
+      const directionsService: google.maps.DirectionsService = new mapApi.DirectionsService()
+      directionsService.route(request,
+        (result: google.maps.DirectionsResult) => {
+          console.log(result);
+                
+          const newTripLeg = convertDirectionResult(
+            result,
+            {
+              origin: convertPlaceToLocation(origin),
+              destination: convertPlaceToLocation(destination),
+              arrivalDate: endDate,
+              departureDate: startDate
+            }
+          )
+          const newTripLegs = tripLegs.slice()
+          newTripLegs.push(newTripLeg)
+          setMapContext({ tripLegs: newTripLegs, origin: null, destination: null })
+      })
+    }
+  }, [origin, destination, tripLegs, map, mapApi])
 
   return (
     <Grid container>
@@ -138,29 +165,20 @@ export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register, watch }:
             classes={{ root: classes.disabledClass  }}
           />
         </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={
-              <div className={classes.locationField}>
-                { editedTripLeg?.time || 'Create a route'}
-              </div>
-            }
-            label="Travel Time"
-            labelPlacement='start'
-            classes={{ root: classes.disabledClass  }}
-          />
+        <Grid item container justify='center'>
+          
         </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={
-              <div className={classes.locationField}>
-                { editedTripLeg?.distance || 'Create a route'}
-              </div>
-            }
-            label="Distance"
-            labelPlacement='start'
-            classes={{ root: classes.disabledClass  }}
-          />
+        <Grid item container justify='center'>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={saveTripLeg}
+            disabled={!origin || !destination}
+          >
+            Save Trip Leg
+          </Button>
         </Grid>
       </Grid>
       <Grid container item xs={8} direction='row'>
@@ -169,11 +187,11 @@ export const CreateTripLeg: React.FC<CreateTripLegProps> = ({ register, watch }:
             itinerary={partialItinerary}
             shouldAllowSearch
             shouldShowPlanner={false}
-            onDirectionsResult={onDirectionsResult}
+            updateContext={updateContext}
           />
         </Grid>
         <Grid item>
-            Create a route by searching locations on the map and adding them as an origin or destination.
+            Create a trip leg by searching locations on the map and adding them as an origin or destination.
         </Grid>
       </Grid>
     </Grid>

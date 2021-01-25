@@ -12,6 +12,8 @@ import Button from '@material-ui/core/Button'
 import { CreateTripLeg } from './createTripLeg'
 import { useHistory } from 'react-router-dom'
 import { createItinerary } from '../../utils/directionsUtils'
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -38,12 +40,17 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  tripLegsText: {
+    ...flexStyles({ justifyContent: 'flex-start'})
+  }
 }))
 
 interface MapMarkerState {
   origin: google.maps.places.PlaceResult
   destination: google.maps.places.PlaceResult
-  editedTripLeg: TripLeg
+  tripLegs: TripLeg[]
+  map?: google.maps.Map,
+  mapApi?: any // lame google doesnt seem to have a typing for this
 }
 
 export interface MapContextType extends MapMarkerState {
@@ -53,8 +60,10 @@ export interface MapContextType extends MapMarkerState {
 export const MapMarkerContext = React.createContext<MapContextType>({
   origin: null,
   destination: null,
-  editedTripLeg: null,
-  setMapContext: () => {}
+  tripLegs: [],
+  setMapContext: () => {},
+  map: null,
+  mapApi: null
 }) 
 
 interface ItineraryData {
@@ -72,13 +81,15 @@ export const CreateItinerary = () => {
   const [mapMarkerState, setMapMarkerState] = useState<MapMarkerState>({
     origin: null,
     destination: null,
-    editedTripLeg: null
+    tripLegs: [],
+    map: null,
+    mapApi: null
   })
 
   const saveForm = (itineraryData: ItineraryData) => {
     // TODO add validation here!
     const newItinerary: Itinerary = createItinerary({
-      tripLegs: [mapMarkerState.editedTripLeg],
+      tripLegs: mapMarkerState.tripLegs,
       title: itineraryData.title,
       notes: itineraryData.notes
     })
@@ -86,7 +97,6 @@ export const CreateItinerary = () => {
     saveItinerary(newItinerary).then((itinerary: Itinerary) => {
       itineraryDispatch(storeItinerary(itinerary))
       itineraryDispatch(selectItinerary(itinerary))
-      console.log('pushing to home');
       
       history.push('/home')
     })
@@ -97,6 +107,11 @@ export const CreateItinerary = () => {
       ...mapMarkerState,
       ...place
     })
+  }
+
+  const deleteTripLeg = (index: number) => () => {
+    const newTripLegs = mapMarkerState.tripLegs.slice().splice(index, 1)
+    setMapMarkerState({ ...mapMarkerState, tripLegs: newTripLegs })
   }
 
   
@@ -125,6 +140,29 @@ export const CreateItinerary = () => {
           <MapMarkerContext.Provider value={{ ...mapMarkerState, setMapContext }}>
             <CreateTripLeg register={register} watch={watch} />
           </MapMarkerContext.Provider>
+          <Grid item xs={10}>
+            <Typography component="h3">
+                Trip Legs
+            </Typography>
+            {
+              mapMarkerState.tripLegs.map((tripLeg: TripLeg, index) => {
+                return (
+                  <div key={tripLeg.overviewPolyline + index}>
+                    <div className={classes.tripLegsText}>
+                      <span> {`${tripLeg.origin.name} to ${tripLeg.destination.name}`} </span>
+                      <span> {`${tripLeg.distance} and ${tripLeg.time}`} </span>
+                    </div>
+                    <IconButton
+                      aria-label="Delete Trip Leg"
+                      onClick={deleteTripLeg(index)}
+                    >
+                      <ClearIcon />
+                    </IconButton>
+                  </div>
+                )
+              })
+            }
+          </Grid>
           <Grid item xs={12}>
             <TextField
               variant="outlined"

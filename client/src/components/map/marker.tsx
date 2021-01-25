@@ -59,23 +59,6 @@ export const Marker = ({ place }: MarkerProps) => {
     const initialState: Partial<MapContextType> =  {
       [options[index]]: place
     }
-
-    const routeSelectionCompleted = origin && !destination
-    const routeOriginSelectionChanged = origin && origin?.name !== place.name &&  optionIsOrigin
-    const routeDestinationChanged = destination && destination?.name !== place.name && !optionIsOrigin
-    if (routeSelectionCompleted || routeOriginSelectionChanged || routeDestinationChanged) {
-      if (optionIsOrigin) {
-        initialState.editedTripLeg = {
-          origin: convertPlaceToLocation(place),
-          destination: destination ? convertPlaceToLocation(destination) : null
-        }
-      } else {
-        initialState.editedTripLeg = {
-          origin: convertPlaceToLocation(origin),
-          destination: convertPlaceToLocation(place)
-        }
-      }
-    }
     setMapContext(initialState)
     setAnchorEl(null);
   };

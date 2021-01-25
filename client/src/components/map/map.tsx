@@ -34,18 +34,17 @@ interface MapProps {
   itinerary: Itinerary
   shouldAllowSearch?: boolean
   shouldShowPlanner?: boolean
-  onDirectionsResult?: (result: google.maps.DirectionsResult) => void
+  updateContext?: (map: google.maps.Map, mapApi: any) => void
 }
 
 
 
-export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, shouldShowPlanner = false, onDirectionsResult  }) => {
+export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, shouldShowPlanner = false, updateContext }) => {
   const [mapIsLoaded, setMapLoaded] = useState(false)
   const [currentMarker, setCurrentMarker] = useState<google.maps.places.PlaceResult>(null)
   const searchBoxRef = useRef()
-  const directionsService = useRef<google.maps.DirectionsService>(null)
   const directionsRenderer = useRef<google.maps.DirectionsRenderer>(null)
-  const drawnPolylines = useRef<google.maps.Polyline[]>([])
+  const drawnPolylines = useRef<{ [polyline: string]: google.maps.Polyline}>({})
   const searchBox = useRef<google.maps.places.SearchBox>(null)
   const map = useRef<google.maps.Map>(null)
   const mapsApi = useRef<any>(null)
@@ -69,19 +68,27 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
 
   useEffect(() => {
     
-    drawnPolylines.current.forEach((polyline) => {
-      // clear out any current polylines
-      polyline.setMap(null)
-      drawnPolylines.current = []
-    })
+    // drawnPolylines.current.forEach((polyline) => {
+    //   // clear out any current polylines
+    //   polyline.setMap(null)
+    //   drawnPolylines.current = []
+    // })
     
 
     if (mapIsLoaded && itinerary) {
       const { tripLegs } = itinerary
-      
-      tripLegs.forEach(({ overviewPolyline, destination, origin }: TripLeg) => {
-        const tripLegRendered = !!directionsRenderer.current.getDirections()?.routes.find((r: google.maps.DirectionsRoute) => r.overview_polyline === overviewPolyline)
+      console.log(itinerary);
 
+      Object.keys(drawnPolylines.current).forEach((overviewPolyline: string) => {
+        if (!tripLegs.some((tripLeg) => tripLeg.overviewPolyline === overviewPolyline)) {
+          drawnPolylines.current[overviewPolyline].setMap(null)
+          delete drawnPolylines.current[overviewPolyline]
+        }
+      })
+      
+      tripLegs.forEach(({ overviewPolyline }: TripLeg) => {
+        const tripLegRendered = !!drawnPolylines.current[overviewPolyline]
+        
         if (!tripLegRendered) {
           
           if (overviewPolyline?.length) {
@@ -95,34 +102,34 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
               strokeWeight: 2
             })
 
-            var bounds = new google.maps.LatLngBounds()
-            polyline.getPath().forEach((element) => bounds.extend(element))
+            // var bounds = new google.maps.LatLngBounds()
+            // polyline.getPath().forEach((element) => bounds.extend(element))
                       
             polyline.setMap(map.current)
-            map.current.fitBounds(bounds)
-            drawnPolylines.current.push(polyline)
+            // map.current.fitBounds(bounds)
+            drawnPolylines.current[overviewPolyline] = polyline
   
-          } else {
-            const request: google.maps.DirectionsRequest = {
-              destination: destination,
-              origin: origin,
-              travelMode: google.maps.TravelMode.DRIVING
-            }
-  
-            directionsService.current.route(request,
-              (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => {
-                console.log(result);
-                
-                directionsRenderer.current.setDirections(result)
-                directionsRenderer.current.setMap(map.current)
-                if (onDirectionsResult) {
-                  onDirectionsResult(result)
-                }
-            })
           }
         }
       })
     }
+  }, [mapIsLoaded, itinerary])
+  
+  useEffect(() => {
+    if (mapIsLoaded && itinerary) {
+      const bounds: google.maps.LatLngBounds = new mapsApi.current.LatLngBounds()
+
+      const { tripLegs } = itinerary
+      if (tripLegs && tripLegs.length) {
+        tripLegs.forEach((tripLeg: TripLeg) => {
+          bounds.extend(tripLeg.origin)
+          bounds.extend(tripLeg.destination)
+        })
+
+        map.current.fitBounds(bounds)
+      }
+    }
+
   }, [mapIsLoaded, itinerary])
 
   return (
@@ -138,9 +145,6 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
           onGoogleApiLoaded={(gmaps) => {
             mapsApi.current = gmaps.maps
             map.current = gmaps.map
-
-            directionsService.current = new mapsApi.current.DirectionsService()
-            console.log(directionsService);
             
             directionsRenderer.current = new mapsApi.current.DirectionsRenderer()            
             geometry.current = mapsApi.current.geometry
@@ -150,10 +154,12 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
               searchBox.current.addListener('places_changed', onPlacesChanged);
             }
             
-
-            setMapLoaded(true)   
+            setMapLoaded(true)
+            
+            if (updateContext) {
+              updateContext(gmaps.map, gmaps.maps)
             }
-          }
+          }}
         >
           {
             currentMarker &&
