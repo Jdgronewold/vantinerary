@@ -16,6 +16,7 @@ import { Map } from '../map/map'
 import { CreateAndEditItinerary } from '../itinerary/createAndEditItinerary'
 import { fetchItineraries } from '../../services/itineraryService';
 import { saveItineraries } from '../../actions'
+import { DisplayItinerary } from '../itinerary/displayItineray'
 
 const useStyles = makeStyles((theme) => ({
     homepage: {
@@ -35,7 +36,12 @@ const useStyles = makeStyles((theme) => ({
     mapRoot: {
       height: `calc(50% - ${theme.spacing(1)}px)`,
       width: '100%',
-      ...flexStyles({ justifyContent: 'flex-end'}),
+      ...flexStyles({ justifyContent: 'flex-end', flexDirection: 'column'}),
+    },
+    mapPage: {
+      width: '100%',
+      height: '100%',
+      ...flexStyles({ justifyContent: 'flex-start', flexDirection: 'column'}),
     }
   })
 ) 
@@ -63,9 +69,13 @@ const MainMapPage = () => {
   const { currentItinerary } = useContext(ItineraryContext)
 
   return (
-    <div className={classes.mapRoot}>
-      <Map itinerary={currentItinerary} shouldShowPlanner={true} />
+    <div className={classes.mapPage}>
+      <div className={classes.mapRoot}>
+        <Map itinerary={currentItinerary} shouldShowPlanner={true} />
+      </div>
+      <DisplayItinerary />
     </div>
+    
     
   )
 }

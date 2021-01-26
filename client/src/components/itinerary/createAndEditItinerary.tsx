@@ -41,7 +41,11 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
   tripLegsText: {
-    ...flexStyles({ justifyContent: 'flex-start'})
+    ...flexStyles({ justifyContent: 'flex-start', flexDirection: 'column'})
+  },
+  tripLegsContainer: {
+    ...flexStyles({ justifyContent: 'space-around'}),
+    border: `1px solid ${theme.palette.primary.main}`
   }
 }))
 
@@ -82,13 +86,20 @@ export const CreateAndEditItinerary: React.FC<CreateAndEditItineraryProps> = ({ 
   const { register, handleSubmit, watch } = useForm()
   const { itineraryDispatch, currentItinerary } = useContext(ItineraryContext)
   const history = useHistory()
+
   const [mapMarkerState, setMapMarkerState] = useState<MapMarkerState>({
     origin: null,
     destination: null,
-    tripLegs: isEditing ? currentItinerary.tripLegs : [],
+    tripLegs: (isEditing && currentItinerary) ? currentItinerary.tripLegs : [],
     map: null,
     mapApi: null
   })
+
+
+  if (isEditing && !currentItinerary) {
+    history.push('/home')
+    return null
+  }
 
   const saveForm = (itineraryData: ItineraryData) => {
     // TODO add validation here!
@@ -131,8 +142,13 @@ export const CreateAndEditItinerary: React.FC<CreateAndEditItineraryProps> = ({ 
   }
 
   const deleteTripLeg = (index: number) => () => {
-    const newTripLegs = mapMarkerState.tripLegs.slice().splice(index, 1)
+    const newTripLegs = mapMarkerState.tripLegs.slice()
+    newTripLegs.splice(index, 1)
     setMapMarkerState({ ...mapMarkerState, tripLegs: newTripLegs })
+  }
+
+  const cancelEdit = () => {
+    history.push('/home')
   }
 
   
@@ -163,24 +179,28 @@ export const CreateAndEditItinerary: React.FC<CreateAndEditItineraryProps> = ({ 
             <CreateTripLeg register={register} watch={watch} />
           </MapMarkerContext.Provider>
           <Grid item xs={10}>
-            <Typography component="h3">
+            <Typography component="h2" variant="h6">
                 Trip Legs
             </Typography>
+          </Grid>
+          <Grid item xs={10} container spacing={2}>
             {
               mapMarkerState.tripLegs.map((tripLeg: TripLeg, index) => {
                 return (
-                  <div key={tripLeg.overviewPolyline + index}>
-                    <div className={classes.tripLegsText}>
-                      <span> {`${tripLeg.origin.name} to ${tripLeg.destination.name}`} </span>
-                      <span> {`${tripLeg.distance} and ${tripLeg.time}`} </span>
+                  <Grid item xs={4} key={tripLeg.overviewPolyline + index}>
+                    <div className={classes.tripLegsContainer}>
+                      <div className={classes.tripLegsText}>
+                        <span style={{fontWeight: 'bold'}}> {`${tripLeg.origin.name} to ${tripLeg.destination.name}`} </span>
+                        <span> {`${tripLeg.distance} and ${tripLeg.time}`} </span>
+                      </div>
+                      <IconButton
+                        aria-label="Delete Trip Leg"
+                        onClick={deleteTripLeg(index)}
+                      >
+                        <ClearIcon />
+                      </IconButton>
                     </div>
-                    <IconButton
-                      aria-label="Delete Trip Leg"
-                      onClick={deleteTripLeg(index)}
-                    >
-                      <ClearIcon />
-                    </IconButton>
-                  </div>
+                  </Grid>
                 )
               })
             }
@@ -207,8 +227,20 @@ export const CreateAndEditItinerary: React.FC<CreateAndEditItineraryProps> = ({ 
           color="primary"
           className={classes.submit}
         >
-          Create Itinerary
+          { isEditing ? 'Edit Itinerary' :  'Create Itinerary' }
         </Button>
+        {
+          isEditing && 
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.submit}
+            onClick={cancelEdit}
+          >
+            Cancel Edit
+          </Button>
+        }
       </form>
     </div>
     

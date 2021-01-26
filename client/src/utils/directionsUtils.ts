@@ -45,3 +45,13 @@ export const mapColorArray = [
   'darkblue', 'forestgreen', 'darkmagenta',
   'crimson', 'blueviolet', 'hotpink' 
 ]
+
+export const parseGoogleTimes = (googleTime) => {
+  const days = googleTime.split('days')
+  const hours = googleTime.split('hours')
+  const minutes = googleTime.split('minutes')
+  console.log(days);
+  console.log(hours);
+  console.log(minutes);
+  
+}
