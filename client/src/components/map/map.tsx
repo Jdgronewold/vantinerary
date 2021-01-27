@@ -71,7 +71,6 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
     
     if (mapIsLoaded && itinerary) {
       const { tripLegs } = itinerary
-      console.log(itinerary);
 
       Object.keys(drawnPolylines.current).forEach((overviewPolyline: string) => {
         if (!tripLegs.some((tripLeg) => tripLeg.overviewPolyline === overviewPolyline)) {

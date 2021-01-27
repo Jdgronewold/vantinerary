@@ -46,12 +46,15 @@ export const mapColorArray = [
   'crimson', 'blueviolet', 'hotpink' 
 ]
 
-export const parseGoogleTimes = (googleTime) => {
-  const days = googleTime.split('days')
-  const hours = googleTime.split('hours')
-  const minutes = googleTime.split('minutes')
-  console.log(days);
-  console.log(hours);
-  console.log(minutes);
-  
+export const parseGoogleTimes = (googleTime: string): { days: number, hours: number, minutes: number} => {
+  const splitTime = googleTime.split(' ')
+  const daysIndex = splitTime.findIndex((element) => element.includes('day'))
+  const hoursIndex = splitTime.findIndex((element) => element.includes('hour'))
+  const minutesIndex = splitTime.findIndex((element) => element.includes('min'))
+ return {
+   days: daysIndex > 0 ? parseInt(splitTime[daysIndex - 1]) : 0,
+   hours: hoursIndex > 0 ? parseInt(splitTime[hoursIndex - 1]) : 0,
+   minutes: minutesIndex > 0 ? parseInt(splitTime[minutesIndex - 1]) : 0,
+ }
+
 }
