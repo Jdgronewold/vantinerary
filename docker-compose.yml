@@ -1,10 +1,7 @@
 version: '3'
 services:
-  mongo:
-    restart: always
-    image: mongo:latest
-    ports:
-      - "27017:27017"
+  postgres:
+    image: 'postgres:latest'
     depends_on:
       - 'api'
       - 'client'
@@ -27,6 +24,11 @@ services:
       - ./server:/app
     environment:
       - NODE_ENV=development
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
   client:
     build:
       dockerfile: Dockerfile.dev
