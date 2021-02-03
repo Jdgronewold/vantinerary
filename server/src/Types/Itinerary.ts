@@ -1,19 +1,20 @@
 export interface Itinerary {
-  _id: string,
+  id: string,
   authorId: string,
-  tripLegs: tripLeg[],
+  tripLegs: TripLeg[],
   notes: string,
   title: string
 }
 
-export interface tripLeg {
+export interface TripLeg {
   origin: Coords,
   destination: Coords,
   distance: string,
   time: string,
   overviewPolyline: string,
-  startDate: Date,
-  endDate: Date
+  arrivalDate: Date,
+  departureDate: Date
+  id: string
 }
 
 export interface Coords {

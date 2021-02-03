@@ -18,7 +18,7 @@ export interface ILogin {
 
 
 export interface IDataStoredInToken {
-  _id: string;
+  id: string;
 }
 
 

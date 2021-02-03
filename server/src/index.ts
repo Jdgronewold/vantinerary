@@ -6,6 +6,7 @@
 import App from './App';
 import { AuthController, ItineraryController, NotesController }  from './Controllers';
 import dotenv from 'dotenv';
+import 'reflect-metadata';
  
 dotenv.config()
 const app = new App(
