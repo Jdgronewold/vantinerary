@@ -1,5 +1,6 @@
+import { UserEntity } from 'Entities/User.entity';
 import { Request } from 'express';
-import mongoose from 'mongoose'
+// import mongoose from 'mongoose'
 
 export interface IUser {
     name: string;
@@ -28,6 +29,6 @@ export interface ITokenData {
 }
 
 export interface IRequestWithUser extends Request {
-  user?: IUser & mongoose.Document;
+  user?: UserEntity;
 }
 

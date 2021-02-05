@@ -1,9 +1,9 @@
 // import mongoose from 'mongoose';
 // import { IUser } from '../Types';
 
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { ItineraryEntity } from './Itinerary.entity';
-import { NoteEntity } from './Note.entity';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { ItineraryEntity, NoteEntity } from './index';
+// import {  } from './Note.entity';
 
 // const userSchema = new mongoose.Schema({
 //   name: String,

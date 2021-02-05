@@ -25,6 +25,24 @@ import { UserEntity } from './User.entity'
 // export const itineraryModel = mongoose.model<Itinerary & mongoose.Document>('Itinerary', itinerarySchema)
 
 @Entity()
+export class ItineraryEntity {
+  @PrimaryGeneratedColumn()
+  public id?: string;
+
+  @OneToMany(() => TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true })
+  tripLegs!: TripLegEntity[];
+
+  @ManyToOne(() => UserEntity, user => user.itineraries, { cascade: true })
+  user!: UserEntity
+
+  @Column()
+  public title!: string
+// 
+  @Column()
+  public notes!: string
+}
+
+@Entity()
 export class TripLegEntity {
 
   @PrimaryGeneratedColumn()
@@ -54,22 +72,4 @@ export class TripLegEntity {
   @ManyToOne(() => ItineraryEntity, itinerary => itinerary.tripLegs, { cascade: true })
   itinerary!: ItineraryEntity
 
-}
-
-@Entity()
-export class ItineraryEntity {
-  @PrimaryGeneratedColumn()
-  public id?: string;
-
-  @OneToMany(() => TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true })
-  tripLegs!: TripLegEntity[];
-
-  @ManyToOne(() => UserEntity, user => user.itineraries, { cascade: true })
-  user!: UserEntity
-
-  @Column()
-  public title!: string
-// 
-  @Column()
-  public notes!: string
 }

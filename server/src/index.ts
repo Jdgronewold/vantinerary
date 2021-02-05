@@ -11,9 +11,9 @@ import 'reflect-metadata';
 dotenv.config()
 const app = new App(
   [
-    new AuthController(),
-    new NotesController(),
-    new ItineraryController()
+    NotesController,
+    ItineraryController,
+    AuthController,
   ],
   5000,
 );

@@ -1,12 +1,13 @@
 import * as express from 'express';
-import { noteModel } from '../Models'
 import { IController, INote, IRequestWithUser } from '../Types'
 import { authMiddleware, DeleteNoteUnsuccessfulException, EditNoteUnsuccessfulException } from '../Middleware'
+import { getRepository } from 'typeorm';
+import { NoteEntity } from '../Entities/Note.entity';
 
 export class NotesController implements IController {
     public path = '/notes'
     public router = express.Router()
-    private notes = noteModel
+    private notesRepository = getRepository(NoteEntity)
      
     constructor() {
       this.intializeRoutes();
@@ -19,76 +20,56 @@ export class NotesController implements IController {
       this.router.delete(`${this.path}`, authMiddleware, this.deleteNote);
     }
 
-    getAllNotes = (request: IRequestWithUser, response: express.Response) => {
+    getAllNotes = async (request: IRequestWithUser, response: express.Response) => {
       if (request.user) {
         // constrain this to reasonable dates at some point
-        this.notes.find({_id: { $in : request.user.noteIds } }).then((notes: INote[]) => {
-          response.send(notes)
-        })
+        const notes = await this.notesRepository.find({ where: { user: request.user }})
+        response.send(notes)
+      
       }
     }
 
-    createNote = (request: IRequestWithUser, response: express.Response) => {
+    createNote = async (request: IRequestWithUser, response: express.Response) => {
       const note: INote = request.body
       const { user } = request
       if (user) {
-        note.authorId = user._id
-        const createdNote = new noteModel(note)
-        const notePromise = createdNote.save()
-        user.noteIds.push(createdNote._id)
-        const userPromise = user.save()
+        const newNote = this.notesRepository.create({ ...note, user })
+        const savedNote = await this.notesRepository.save(newNote)
 
-        
-        
-        Promise.all([notePromise, userPromise]).then(([savedNote]) => {
-            response.send(savedNote)
-        })
+        response.send(savedNote)
       }
     }
 
-    editNote = (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
+    editNote = async (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
       const noteFromRequest: INote = request.body
       const { user } = request
       if (user) {
-        noteModel.findById(noteFromRequest._id, (err, note) => {
+        const note = await this.notesRepository.findOne(noteFromRequest.id)
           
-          if (note) {
-            note.body = noteFromRequest.body
-            note.date = noteFromRequest.date
-            note.title = noteFromRequest.title
-            note.showOnCalendar = noteFromRequest.showOnCalendar
-            note.save()
-            response.send(note)
-          } else {
-            next(new EditNoteUnsuccessfulException())
-          }
-        })
+        if (note) {
+          this.notesRepository.merge(note, noteFromRequest)
+
+          const savedNote = await this.notesRepository.save(note)
+          response.send(savedNote)
+        } else {
+          next(new EditNoteUnsuccessfulException())
+        }
       } else {
         next(new EditNoteUnsuccessfulException())
       }
     }
 
-    deleteNote = (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
+    deleteNote = async (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
       const noteIDFromRequest: string = request.body.id
       const { user } = request
-      console.log(noteIDFromRequest)
       
       if (user) {
-        noteModel.findById(noteIDFromRequest, (err, note) => {
-          console.log('note', note);
-          console.log('error', err);
-          
-          if (note) {
-            note.remove()
-            const userNoteIDIndex = user.noteIds.findIndex((noteID) => noteID === noteIDFromRequest)
-            user.noteIds.splice(userNoteIDIndex, 1)
-            user.save()
-            console.log(user);
-            response.send(note)
-          } else {
-            next(new DeleteNoteUnsuccessfulException())
-          }
-        })
+        const results = await this.notesRepository.delete(noteIDFromRequest)
+        if (results.raw[1]) {
+          response.send(results)
+        } else {
+          next(new DeleteNoteUnsuccessfulException())
+        }
       } else {
         next(new DeleteNoteUnsuccessfulException())
       }

@@ -7,19 +7,28 @@ import { IController } from './Types'
 import { errorMiddleware } from './Middleware'
 import { createConnection } from 'typeorm';
 import { config } from './ormconfig'
+
+console.log('HELLLOO');
+
  
 class App {
   public app: express.Application;
   public port: number;
  
-  constructor(controllers: IController[], port: number) {
+  constructor(controllers: { new(): IController}[], port: number) {
     this.app = express();
     this.port = port;
+
+    const initialize = async () => {
  
-    this.initializeMiddlewares();
-    this.initializeControllers(controllers);
-    this.connectToDatabase()
-    this.initializeErrorHandling()
+      this.initializeMiddlewares();
+      await this.connectToDatabase()
+      this.initializeControllers(controllers);
+      this.initializeErrorHandling()
+    }
+
+    initialize()
+
   }
  
   private initializeMiddlewares() {
@@ -29,9 +38,10 @@ class App {
     this.app.use(compression());
   }
  
-  private initializeControllers(controllers: IController[]) {
+  private initializeControllers(controllers: { new(): IController}[]) {
     controllers.forEach((controller) => {
-      this.app.use('/', controller.router);
+      const initializeController = new controller()
+      this.app.use('/', initializeController.router);
     });
   }
 
@@ -41,6 +51,8 @@ class App {
 
   private async connectToDatabase() {
     try {
+      console.log(config)
+      
       await createConnection(config)
     }
     catch (error) {

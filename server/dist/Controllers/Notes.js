@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -8,82 +16,64 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
-const Models_1 = require("../Models");
 const Middleware_1 = require("../Middleware");
+const typeorm_1 = require("typeorm");
+const Note_entity_1 = require("../Entities/Note.entity");
 class NotesController {
     constructor() {
         this.path = '/notes';
         this.router = express.Router();
-        this.notes = Models_1.noteModel;
-        this.getAllNotes = (request, response) => {
+        this.notesRepository = typeorm_1.getRepository(Note_entity_1.NoteEntity);
+        this.getAllNotes = (request, response) => __awaiter(this, void 0, void 0, function* () {
             if (request.user) {
                 // constrain this to reasonable dates at some point
-                this.notes.find({ _id: { $in: request.user.noteIds } }).then((notes) => {
-                    response.send(notes);
-                });
+                const notes = yield this.notesRepository.find({ where: { user: request.user } });
+                response.send(notes);
             }
-        };
-        this.createNote = (request, response) => {
+        });
+        this.createNote = (request, response) => __awaiter(this, void 0, void 0, function* () {
             const note = request.body;
             const { user } = request;
             if (user) {
-                note.authorId = user._id;
-                const createdNote = new Models_1.noteModel(note);
-                const notePromise = createdNote.save();
-                user.noteIds.push(createdNote._id);
-                const userPromise = user.save();
-                Promise.all([notePromise, userPromise]).then(([savedNote]) => {
-                    response.send(savedNote);
-                });
+                const newNote = this.notesRepository.create(Object.assign({}, note, { user }));
+                const savedNote = yield this.notesRepository.save(newNote);
+                response.send(savedNote);
             }
-        };
-        this.editNote = (request, response, next) => {
+        });
+        this.editNote = (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const noteFromRequest = request.body;
             const { user } = request;
             if (user) {
-                Models_1.noteModel.findById(noteFromRequest._id, (err, note) => {
-                    if (note) {
-                        note.body = noteFromRequest.body;
-                        note.date = noteFromRequest.date;
-                        note.title = noteFromRequest.title;
-                        note.showOnCalendar = noteFromRequest.showOnCalendar;
-                        note.save();
-                        response.send(note);
-                    }
-                    else {
-                        next(new Middleware_1.EditNoteUnsuccessfulException());
-                    }
-                });
+                const note = yield this.notesRepository.findOne(noteFromRequest.id);
+                if (note) {
+                    this.notesRepository.merge(note, noteFromRequest);
+                    const savedNote = yield this.notesRepository.save(note);
+                    response.send(savedNote);
+                }
+                else {
+                    next(new Middleware_1.EditNoteUnsuccessfulException());
+                }
             }
             else {
                 next(new Middleware_1.EditNoteUnsuccessfulException());
             }
-        };
-        this.deleteNote = (request, response, next) => {
+        });
+        this.deleteNote = (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const noteIDFromRequest = request.body.id;
             const { user } = request;
-            console.log(noteIDFromRequest);
             if (user) {
-                Models_1.noteModel.findById(noteIDFromRequest, (err, note) => {
-                    console.log('note', note);
-                    console.log('error', err);
-                    if (note) {
-                        note.remove();
-                        const userNoteIDIndex = user.noteIds.findIndex((noteID) => noteID === noteIDFromRequest);
-                        user.noteIds.splice(userNoteIDIndex, 1);
-                        user.save();
-                        console.log(user);
-                        response.send(note);
-                    }
-                    else {
-                        next(new Middleware_1.DeleteNoteUnsuccessfulException());
-                    }
-                });
+                const results = yield this.notesRepository.delete(noteIDFromRequest);
+                if (results.raw[1]) {
+                    response.send(results);
+                }
+                else {
+                    next(new Middleware_1.DeleteNoteUnsuccessfulException());
+                }
             }
             else {
                 next(new Middleware_1.DeleteNoteUnsuccessfulException());
             }
-        };
+        });
         this.intializeRoutes();
     }
     intializeRoutes() {

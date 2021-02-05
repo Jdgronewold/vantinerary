@@ -2,7 +2,7 @@ import * as express from 'express';
 import { IController, Itinerary, IRequestWithUser } from '../Types'
 import { authMiddleware , DeleteItineraryUnsuccessfulException, EditItineraryUnsuccessfulException} from '../Middleware'
 import { getRepository } from 'typeorm';
-import { ItineraryEntity, TripLegEntity } from 'Entities/Itinerary.entity';
+import { ItineraryEntity, TripLegEntity } from '../Entities/Itinerary.entity';
 import { TripLeg } from '../Types/Itinerary'
 
 export class ItineraryController implements IController {
@@ -24,9 +24,40 @@ export class ItineraryController implements IController {
 
     getAllItineraries = (request: IRequestWithUser, response: express.Response) => {
       if (request.user) {
-        this.itineraryRepository.findByIds(request.user.itineraryIds).then((itineraries: ItineraryEntity[]) => {
+        this.itineraryRepository.find({ where: { user: request.user }}).then((itineraries: ItineraryEntity[]) => {
           response.send(itineraries)
         })
+      }
+    }
+
+    editItinerary = async (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
+      const itineraryFromRequest: Itinerary = request.body
+      const { user } = request
+      if (user) {
+        const itinerary = await this.itineraryRepository.findOne(itineraryFromRequest.id, { relations: ['tripLegs']})
+
+        // const newTripLegs: TripLegEntity[] = itineraryFromRequest.tripLegs.map((tripLeg: TripLeg) => {
+        //   const tripLegIndex = itinerary?.tripLegs.findIndex((tripLegEntity: TripLegEntity) => { tripLegEntity.id === tripLeg.id })
+        //   if (tripLegIndex && itinerary?.tripLegs[tripLegIndex]) {
+        //     return itinerary?.tripLegs[tripLegIndex]
+        //   }
+        //   const createdTripLeg = this.tripLegRepository.create(tripLeg)
+        //   return createdTripLeg
+        // })
+          
+        if (itinerary) {
+          this.itineraryRepository.merge(itinerary, {
+            ...itineraryFromRequest,
+            // tripLegs: newTripLegs
+          })
+
+          const results = await this.itineraryRepository.save(itinerary)
+          response.send(results)
+        } else {
+          next(new EditItineraryUnsuccessfulException())
+        }
+      } else {
+        next(new EditItineraryUnsuccessfulException())
       }
     }
 
@@ -38,37 +69,6 @@ export class ItineraryController implements IController {
         const createdItinerary = this.itineraryRepository.create(itinerary)
         const savedItinerary = await this.itineraryRepository.save(createdItinerary)
         response.send(savedItinerary)
-      }
-    }
-
-    editItinerary = async (request: IRequestWithUser, response: express.Response, next: express.NextFunction) => {
-      const itineraryFromRequest: Itinerary = request.body
-      const { user } = request
-      if (user) {
-        const itinerary = await this.itineraryRepository.findOne(itineraryFromRequest.id, { relations: ['tripLegs']})
-
-        const newTripLegs: TripLegEntity[] = itineraryFromRequest.tripLegs.map((tripLeg: TripLeg) => {
-          const tripLegIndex = itinerary?.tripLegs.findIndex((tripLegEntity: TripLegEntity) => tripLegEntity.id === tripLeg.id)
-          if (tripLegIndex && itinerary?.tripLegs[tripLegIndex]) {
-            return itinerary?.tripLegs[tripLegIndex]
-          }
-          const createdTripLeg = this.tripLegRepository.create(tripLeg)
-          return createdTripLeg
-        })
-          
-        if (itinerary) {
-          this.itineraryRepository.merge(itinerary, {
-            ...itineraryFromRequest,
-            tripLegs: newTripLegs
-          })
-
-          const results = await this.itineraryRepository.save(itinerary)
-          response.send(itinerary)
-        } else {
-          next(new EditItineraryUnsuccessfulException())
-        }
-      } else {
-        next(new EditItineraryUnsuccessfulException())
       }
     }
 
