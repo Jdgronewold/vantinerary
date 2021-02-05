@@ -3,6 +3,7 @@
 
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
 import { UserEntity } from './User.entity'
+import { TripLegEntity } from './TripLeg.entity'
 
 
 // const tripLegSchema = new mongoose.Schema({
@@ -32,44 +33,12 @@ export class ItineraryEntity {
   @OneToMany(() => TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true })
   tripLegs!: TripLegEntity[];
 
-  @ManyToOne(() => UserEntity, user => user.itineraries, { cascade: true })
-  user!: UserEntity
+  // @ManyToOne(() => UserEntity, user => user.itineraries, { cascade: true })
+  // user!: UserEntity
 
   @Column()
   public title!: string
 // 
   @Column()
   public notes!: string
-}
-
-@Entity()
-export class TripLegEntity {
-
-  @PrimaryGeneratedColumn()
-  public id?: string;
-
-  @Column()
-  public distance!: string
-
-  @Column()
-  public time!: string
-
-  @Column()
-  public overviewPolyline!: string
-
-  @Column()
-  public arrivalDate!: Date
-
-  @Column()
-  public departureDate!: Date
-
-  @Column("simple-json")
-  public origin!: { lat: number, lng: number, name: string }
-
-  @Column("simple-json")
-  public destination!: { lat: number, lng: number, name: string }
-
-  @ManyToOne(() => ItineraryEntity, itinerary => itinerary.tripLegs, { cascade: true })
-  itinerary!: ItineraryEntity
-
 }

@@ -6,4 +6,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./Itinerary.entity"));
 __export(require("./Note.entity"));
 __export(require("./User.entity"));
+__export(require("./TripLeg.entity"));
 //# sourceMappingURL=index.js.map

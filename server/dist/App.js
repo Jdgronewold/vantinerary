@@ -18,7 +18,6 @@ const compression_1 = __importDefault(require("compression"));
 const Middleware_1 = require("./Middleware");
 const typeorm_1 = require("typeorm");
 const ormconfig_1 = require("./ormconfig");
-console.log('HELLLOO');
 class App {
     constructor(controllers, port) {
         this.app = express_1.default();

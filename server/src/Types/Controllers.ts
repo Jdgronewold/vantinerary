@@ -5,3 +5,4 @@ export interface IController {
     router: express.Router
     initializeRepository?: () => void
 }
+

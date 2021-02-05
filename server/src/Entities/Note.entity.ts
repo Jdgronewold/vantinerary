@@ -38,7 +38,7 @@ export class NoteEntity {
   @Column()
   public showOnCalendar!: boolean
 
-  @ManyToOne(() => UserEntity, user => user.notes, { cascade: true })
-  user!: UserEntity
+  // @ManyToOne(() => UserEntity, user => user.notes, { cascade: true })
+  // user!: UserEntity
 
 }

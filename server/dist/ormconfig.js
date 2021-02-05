@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Entities_1 = require("./Entities");
+console.log(Entities_1.UserEntity);
 exports.config = {
     type: 'postgres',
     host: process.env.PGHOST,
@@ -10,7 +11,7 @@ exports.config = {
     database: process.env.PGDATABASE,
     entities: [
         // __dirname + '/Entities/*.entity{.js}',
-        Entities_1.ItineraryEntity, Entities_1.NoteEntity, Entities_1.UserEntity
+        Entities_1.ItineraryEntity, Entities_1.NoteEntity, Entities_1.UserEntity, Entities_1.TripLegEntity
     ],
     synchronize: true,
 };

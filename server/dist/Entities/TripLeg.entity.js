@@ -1,6 +1,4 @@
 "use strict";
-// import mongoose from 'mongoose';
-// import { INote } from '../Types'
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -12,44 +10,47 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-// const noteSchema = new mongoose.Schema({
-//   authorId: String,
-//   body: String,
-//   title: String,
-//   date: Date,
-//   location: String,
-//   showOnCalendar: Boolean,
-//   tag: Object
-// });
-// export const noteModel = mongoose.model<INote & mongoose.Document>('Note', noteSchema)
-let NoteEntity = class NoteEntity {
+const Itinerary_entity_1 = require("./Itinerary.entity");
+let TripLegEntity = class TripLegEntity {
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", String)
-], NoteEntity.prototype, "id", void 0);
+], TripLegEntity.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
-], NoteEntity.prototype, "body", void 0);
+], TripLegEntity.prototype, "distance", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
-], NoteEntity.prototype, "title", void 0);
+], TripLegEntity.prototype, "time", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
-], NoteEntity.prototype, "location", void 0);
+], TripLegEntity.prototype, "overviewPolyline", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Date)
-], NoteEntity.prototype, "date", void 0);
+], TripLegEntity.prototype, "arrivalDate", void 0);
 __decorate([
     typeorm_1.Column(),
-    __metadata("design:type", Boolean)
-], NoteEntity.prototype, "showOnCalendar", void 0);
-NoteEntity = __decorate([
+    __metadata("design:type", Date)
+], TripLegEntity.prototype, "departureDate", void 0);
+__decorate([
+    typeorm_1.Column("simple-json"),
+    __metadata("design:type", Object)
+], TripLegEntity.prototype, "origin", void 0);
+__decorate([
+    typeorm_1.Column("simple-json"),
+    __metadata("design:type", Object)
+], TripLegEntity.prototype, "destination", void 0);
+__decorate([
+    typeorm_1.ManyToOne(() => Itinerary_entity_1.ItineraryEntity, itinerary => itinerary.tripLegs),
+    __metadata("design:type", Itinerary_entity_1.ItineraryEntity)
+], TripLegEntity.prototype, "itinerary", void 0);
+TripLegEntity = __decorate([
     typeorm_1.Entity()
-], NoteEntity);
-exports.NoteEntity = NoteEntity;
-//# sourceMappingURL=Note.entity.js.map
+], TripLegEntity);
+exports.TripLegEntity = TripLegEntity;
+//# sourceMappingURL=TripLeg.entity.js.map

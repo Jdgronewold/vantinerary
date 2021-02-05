@@ -2,20 +2,21 @@ version: '3'
 services:
   postgres:
     image: 'postgres:latest'
-    depends_on:
-      - 'api'
-      - 'client'
-  pgadmin:
-    links:
-      - postgres:postgres
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    ports:
-      - "8080:80"
     env_file:
       - docker.env
-    networks:
-      - postgres
+    ports:
+      - "5432:5432"
+  # pgadmin:
+  #   links:
+  #     - postgres:postgres
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4
+  #   ports:
+  #     - "8080:80"
+  #   env_file:
+  #     - docker.env
+  #   networks:
+  #     - postgres
   nginx:
     restart: always
     build:
@@ -40,6 +41,8 @@ services:
       - PGDATABASE=postgres
       - PGPASSWORD=postgres_password
       - PGPORT=5432
+    depends_on:
+      - 'postgres'
   client:
     build:
       dockerfile: Dockerfile.dev
@@ -48,6 +51,3 @@ services:
       - /app/node_modules
       - ./client:/app
     stdin_open: true
-networks:
-  postgres:
-    driver: bridge

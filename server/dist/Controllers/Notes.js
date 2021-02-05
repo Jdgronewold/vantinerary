@@ -35,7 +35,8 @@ class NotesController {
             const note = request.body;
             const { user } = request;
             if (user) {
-                const newNote = this.notesRepository.create(Object.assign({}, note, { user }));
+                // const newNote = this.notesRepository.create({ ...note, user })
+                const newNote = this.notesRepository.create(Object.assign({}, note));
                 const savedNote = yield this.notesRepository.save(newNote);
                 response.send(savedNote);
             }

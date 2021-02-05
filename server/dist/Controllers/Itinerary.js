@@ -18,13 +18,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const Middleware_1 = require("../Middleware");
 const typeorm_1 = require("typeorm");
-const Itinerary_entity_1 = require("../Entities/Itinerary.entity");
+const Entities_1 = require("../Entities");
 class ItineraryController {
     constructor() {
         this.path = '/itinerary';
         this.router = express.Router();
-        this.itineraryRepository = typeorm_1.getRepository(Itinerary_entity_1.ItineraryEntity);
-        this.tripLegRepository = typeorm_1.getRepository(Itinerary_entity_1.TripLegEntity);
+        this.itineraryRepository = typeorm_1.getRepository(Entities_1.ItineraryEntity);
+        this.tripLegRepository = typeorm_1.getRepository(Entities_1.TripLegEntity);
         this.getAllItineraries = (request, response) => {
             if (request.user) {
                 this.itineraryRepository.find({ where: { user: request.user } }).then((itineraries) => {

@@ -7,9 +7,6 @@ import { IController } from './Types'
 import { errorMiddleware } from './Middleware'
 import { createConnection } from 'typeorm';
 import { config } from './ormconfig'
-
-console.log('HELLLOO');
-
  
 class App {
   public app: express.Application;

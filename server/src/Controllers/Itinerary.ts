@@ -2,8 +2,7 @@ import * as express from 'express';
 import { IController, Itinerary, IRequestWithUser } from '../Types'
 import { authMiddleware , DeleteItineraryUnsuccessfulException, EditItineraryUnsuccessfulException} from '../Middleware'
 import { getRepository } from 'typeorm';
-import { ItineraryEntity, TripLegEntity } from '../Entities/Itinerary.entity';
-import { TripLeg } from '../Types/Itinerary'
+import { ItineraryEntity, TripLegEntity } from '../Entities';
 
 export class ItineraryController implements IController {
     public path = '/itinerary'
@@ -60,6 +59,8 @@ export class ItineraryController implements IController {
         next(new EditItineraryUnsuccessfulException())
       }
     }
+
+    
 
     createItinerary = async (request: IRequestWithUser, response: express.Response) => {
       const itinerary: Itinerary = request.body

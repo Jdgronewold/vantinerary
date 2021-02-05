@@ -33,7 +33,8 @@ export class NotesController implements IController {
       const note: INote = request.body
       const { user } = request
       if (user) {
-        const newNote = this.notesRepository.create({ ...note, user })
+        // const newNote = this.notesRepository.create({ ...note, user })
+        const newNote = this.notesRepository.create({ ...note })
         const savedNote = await this.notesRepository.save(newNote)
 
         response.send(savedNote)

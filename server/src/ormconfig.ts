@@ -1,5 +1,7 @@
 import { ConnectionOptions } from 'typeorm';
-import { ItineraryEntity, UserEntity, NoteEntity } from './Entities'
+import { UserEntity, ItineraryEntity, NoteEntity, TripLegEntity } from './Entities'
+console.log(UserEntity);
+
  
 export const config: ConnectionOptions = {
   type: 'postgres',
@@ -10,7 +12,7 @@ export const config: ConnectionOptions = {
   database: process.env.PGDATABASE,
   entities: [
     // __dirname + '/Entities/*.entity{.js}',
-    ItineraryEntity, NoteEntity, UserEntity
+    ItineraryEntity, NoteEntity, UserEntity, TripLegEntity
   ],
   synchronize: true,
 };

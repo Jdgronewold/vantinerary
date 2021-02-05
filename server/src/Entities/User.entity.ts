@@ -28,10 +28,10 @@ export class UserEntity {
   @Column()
   public password!: string
 
-  @OneToMany(() => ItineraryEntity, itinerary => itinerary.user, { cascade: true })
-  itineraries!: ItineraryEntity[]
+  // @OneToMany(() => ItineraryEntity, itinerary => itinerary.user, { cascade: true })
+  // itineraries!: ItineraryEntity[]
 
-  @OneToMany(() => NoteEntity, note => note.user, { cascade: true })
-  notes!: NoteEntity[]
+  // @OneToMany(() => NoteEntity, note => note.user, { cascade: true })
+  // notes!: NoteEntity[]
 
 }

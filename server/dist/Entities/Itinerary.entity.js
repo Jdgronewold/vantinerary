@@ -12,7 +12,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const User_entity_1 = require("./User.entity");
+const TripLeg_entity_1 = require("./TripLeg.entity");
 // const tripLegSchema = new mongoose.Schema({
 //   origin: { lat: Number, lng: Number, name: String },
 //   destination: { lat: Number, lng: Number, name: String },
@@ -36,13 +36,9 @@ __decorate([
     __metadata("design:type", String)
 ], ItineraryEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true }),
+    typeorm_1.OneToMany(() => TripLeg_entity_1.TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true }),
     __metadata("design:type", Array)
 ], ItineraryEntity.prototype, "tripLegs", void 0);
-__decorate([
-    typeorm_1.ManyToOne(() => User_entity_1.UserEntity, user => user.itineraries, { cascade: true }),
-    __metadata("design:type", User_entity_1.UserEntity)
-], ItineraryEntity.prototype, "user", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
@@ -55,46 +51,4 @@ ItineraryEntity = __decorate([
     typeorm_1.Entity()
 ], ItineraryEntity);
 exports.ItineraryEntity = ItineraryEntity;
-let TripLegEntity = class TripLegEntity {
-};
-__decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
-    __metadata("design:type", String)
-], TripLegEntity.prototype, "id", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], TripLegEntity.prototype, "distance", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], TripLegEntity.prototype, "time", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], TripLegEntity.prototype, "overviewPolyline", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Date)
-], TripLegEntity.prototype, "arrivalDate", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Date)
-], TripLegEntity.prototype, "departureDate", void 0);
-__decorate([
-    typeorm_1.Column("simple-json"),
-    __metadata("design:type", Object)
-], TripLegEntity.prototype, "origin", void 0);
-__decorate([
-    typeorm_1.Column("simple-json"),
-    __metadata("design:type", Object)
-], TripLegEntity.prototype, "destination", void 0);
-__decorate([
-    typeorm_1.ManyToOne(() => ItineraryEntity, itinerary => itinerary.tripLegs, { cascade: true }),
-    __metadata("design:type", ItineraryEntity)
-], TripLegEntity.prototype, "itinerary", void 0);
-TripLegEntity = __decorate([
-    typeorm_1.Entity()
-], TripLegEntity);
-exports.TripLegEntity = TripLegEntity;
 //# sourceMappingURL=Itinerary.entity.js.map

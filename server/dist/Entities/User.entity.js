@@ -12,7 +12,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const index_1 = require("./index");
 // import {  } from './Note.entity';
 // const userSchema = new mongoose.Schema({
 //   name: String,
@@ -37,14 +36,6 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], UserEntity.prototype, "password", void 0);
-__decorate([
-    typeorm_1.OneToMany(() => index_1.ItineraryEntity, itinerary => itinerary.user, { cascade: true }),
-    __metadata("design:type", Array)
-], UserEntity.prototype, "itineraries", void 0);
-__decorate([
-    typeorm_1.OneToMany(() => index_1.NoteEntity, note => note.user, { cascade: true }),
-    __metadata("design:type", Array)
-], UserEntity.prototype, "notes", void 0);
 UserEntity = __decorate([
     typeorm_1.Entity()
 ], UserEntity);
