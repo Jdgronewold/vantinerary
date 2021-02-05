@@ -35,8 +35,7 @@ class NotesController {
             const note = request.body;
             const { user } = request;
             if (user) {
-                // const newNote = this.notesRepository.create({ ...note, user })
-                const newNote = this.notesRepository.create(Object.assign({}, note));
+                const newNote = this.notesRepository.create(Object.assign({}, note, { user }));
                 const savedNote = yield this.notesRepository.save(newNote);
                 response.send(savedNote);
             }
@@ -64,8 +63,8 @@ class NotesController {
             const { user } = request;
             if (user) {
                 const results = yield this.notesRepository.delete(noteIDFromRequest);
-                if (results.raw[1]) {
-                    response.send(results);
+                if (results.affected && results.affected > 0) {
+                    response.send({ id: noteIDFromRequest });
                 }
                 else {
                     next(new Middleware_1.DeleteNoteUnsuccessfulException());

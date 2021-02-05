@@ -43,7 +43,7 @@ __decorate([
     __metadata("design:type", String)
 ], ItineraryEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true }),
+    typeorm_1.OneToMany(() => TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true, onDelete: 'CASCADE' }),
     __metadata("design:type", Array)
 ], ItineraryEntity.prototype, "tripLegs", void 0);
 __decorate([
@@ -97,7 +97,7 @@ __decorate([
     __metadata("design:type", Object)
 ], TripLegEntity.prototype, "destination", void 0);
 __decorate([
-    typeorm_1.ManyToOne(() => ItineraryEntity, itinerary => itinerary.tripLegs),
+    typeorm_1.ManyToOne(() => ItineraryEntity, itinerary => itinerary.tripLegs, { onDelete: 'CASCADE' }),
     __metadata("design:type", ItineraryEntity)
 ], TripLegEntity.prototype, "itinerary", void 0);
 TripLegEntity = __decorate([

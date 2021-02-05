@@ -9,7 +9,7 @@ export interface IUser {
     friends: string[];
     noteIds: string[];
     itineraryIds: string[];
-    _id: string;
+    id: string;
 }
 
 export interface ILogin {

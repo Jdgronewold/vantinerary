@@ -7,10 +7,7 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  friends: string[];
-  locations: string[];
-  tripDiaryId: string;
-  _id: string;
+  id?: string;
 }
 
 export interface TokenData {
@@ -22,10 +19,6 @@ export const defaultUser: IUser = {
   name: '',
   email: '',
   password: '',
-  friends: [],
-  locations: [],
-  tripDiaryId: '',
-  _id: ''
 }
 
 interface UserState {

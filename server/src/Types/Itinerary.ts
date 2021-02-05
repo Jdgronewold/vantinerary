@@ -1,9 +1,11 @@
+import { UserEntity } from "Entities";
+
 export interface Itinerary {
   id: string,
-  authorId: string,
   tripLegs: TripLeg[],
   notes: string,
-  title: string
+  title: string,
+  user?: UserEntity
 }
 
 export interface TripLeg {

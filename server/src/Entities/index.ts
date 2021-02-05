@@ -26,7 +26,7 @@ export class ItineraryEntity {
   @PrimaryGeneratedColumn()
   public id?: string;
 
-  @OneToMany(() => TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true })
+  @OneToMany(() => TripLegEntity, tripLeg => tripLeg.itinerary, { cascade: true, onDelete: 'CASCADE' })
   tripLegs!: TripLegEntity[];
 
   @ManyToOne(() => UserEntity, user => user.itineraries, { cascade: ["insert" || "update"] })
@@ -66,7 +66,7 @@ export class TripLegEntity {
   @Column("simple-json")
   public destination!: { lat: number, lng: number, name: string }
 
-  @ManyToOne(() => ItineraryEntity, itinerary => itinerary.tripLegs)
+  @ManyToOne(() => ItineraryEntity, itinerary => itinerary.tripLegs, { onDelete: 'CASCADE' })
   itinerary!: ItineraryEntity
 
 }

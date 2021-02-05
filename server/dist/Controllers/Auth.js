@@ -37,12 +37,14 @@ class AuthController {
                 return;
             }
             const userData = request.body;
-            if (yield this.userRepository.find({ email: userData.email })) {
+            const userExists = yield this.userRepository.find({ email: userData.email });
+            if (userExists.length) {
                 next(new Middleware_1.UserWithThatEmailAlreadyExistsException(userData.email));
             }
             else {
                 try {
                     const hashedPassword = yield bcrypt.hash(userData.password, 10);
+                    console.log(userData);
                     const user = this.userRepository.create(Object.assign({}, userData, { password: hashedPassword }));
                     const results = yield this.userRepository.save(user);
                     const tokenData = this.createToken(results);

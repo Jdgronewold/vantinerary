@@ -28,12 +28,15 @@ export class AuthController implements IController {
             return
           }
         const userData: IUser = request.body;
-
-        if ( await this.userRepository.find({ email: userData.email })) {
+        const userExists = await this.userRepository.find({ email: userData.email })
+                
+        if ( userExists.length) {
             next(new UserWithThatEmailAlreadyExistsException(userData.email));
         } else {
             try {
                 const hashedPassword = await bcrypt.hash(userData.password, 10);
+                console.log(userData);
+                
                 const user = this.userRepository.create({
                     ...userData,
                     password: hashedPassword

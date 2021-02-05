@@ -26,7 +26,7 @@ export const deleteItinerary = (itineraryId: string) => {
     headers: getAuthHeader(),
     data: { id: itineraryId}
   })
-  .then((response: AxiosResponse<Itinerary>) => {
+  .then((response: AxiosResponse<{ id: number }>) => {
     return response.data
   })
 }

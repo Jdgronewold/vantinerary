@@ -33,8 +33,7 @@ export class NotesController implements IController {
       const note: INote = request.body
       const { user } = request
       if (user) {
-        // const newNote = this.notesRepository.create({ ...note, user })
-        const newNote = this.notesRepository.create({ ...note })
+        const newNote = this.notesRepository.create({ ...note, user })
         const savedNote = await this.notesRepository.save(newNote)
 
         response.send(savedNote)
@@ -66,8 +65,8 @@ export class NotesController implements IController {
       
       if (user) {
         const results = await this.notesRepository.delete(noteIDFromRequest)
-        if (results.raw[1]) {
-          response.send(results)
+        if (results.affected && results.affected > 0) {
+          response.send({ id: noteIDFromRequest })
         } else {
           next(new DeleteNoteUnsuccessfulException())
         }

@@ -25,28 +25,37 @@ class ItineraryController {
         this.router = express.Router();
         this.itineraryRepository = typeorm_1.getRepository(Entities_1.ItineraryEntity);
         this.tripLegRepository = typeorm_1.getRepository(Entities_1.TripLegEntity);
-        this.getAllItineraries = (request, response) => {
+        this.getAllItineraries = (request, response) => __awaiter(this, void 0, void 0, function* () {
             if (request.user) {
-                this.itineraryRepository.find({ where: { user: request.user } }).then((itineraries) => {
-                    response.send(itineraries);
+                const itineraries = yield this.itineraryRepository.find({
+                    where: { user: request.user },
+                    relations: ['tripLegs']
                 });
+                console.log(itineraries);
+                response.send(itineraries);
             }
-        };
+        });
         this.editItinerary = (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const itineraryFromRequest = request.body;
             const { user } = request;
             if (user) {
                 const itinerary = yield this.itineraryRepository.findOne(itineraryFromRequest.id, { relations: ['tripLegs'] });
-                // const newTripLegs: TripLegEntity[] = itineraryFromRequest.tripLegs.map((tripLeg: TripLeg) => {
-                //   const tripLegIndex = itinerary?.tripLegs.findIndex((tripLegEntity: TripLegEntity) => { tripLegEntity.id === tripLeg.id })
-                //   if (tripLegIndex && itinerary?.tripLegs[tripLegIndex]) {
-                //     return itinerary?.tripLegs[tripLegIndex]
-                //   }
-                //   const createdTripLeg = this.tripLegRepository.create(tripLeg)
-                //   return createdTripLeg
-                // })
+                const newTripLegs = itineraryFromRequest.tripLegs.map((tripLeg) => {
+                    if (itinerary && itinerary.tripLegs) {
+                        const tripLegIndex = itinerary.tripLegs.findIndex((tripLegEntity) => { tripLegEntity.id === tripLeg.id; });
+                        if (tripLegIndex && itinerary.tripLegs[tripLegIndex]) {
+                            return itinerary.tripLegs[tripLegIndex];
+                        }
+                        const createdTripLeg = this.tripLegRepository.create(tripLeg);
+                        return createdTripLeg;
+                    }
+                    else {
+                        const createdTripLeg = this.tripLegRepository.create(tripLeg);
+                        return createdTripLeg;
+                    }
+                });
                 if (itinerary) {
-                    this.itineraryRepository.merge(itinerary, Object.assign({}, itineraryFromRequest));
+                    this.itineraryRepository.merge(itinerary, Object.assign({}, itineraryFromRequest, { tripLegs: newTripLegs }));
                     const results = yield this.itineraryRepository.save(itinerary);
                     response.send(results);
                 }
@@ -62,7 +71,10 @@ class ItineraryController {
             const itinerary = request.body;
             const { user } = request;
             if (user) {
-                const createdItinerary = this.itineraryRepository.create(itinerary);
+                const newTripLegs = itinerary.tripLegs.map((tripLeg) => {
+                    return this.tripLegRepository.create(tripLeg);
+                });
+                const createdItinerary = this.itineraryRepository.create(Object.assign({}, itinerary, { tripLegs: newTripLegs, user }));
                 const savedItinerary = yield this.itineraryRepository.save(createdItinerary);
                 response.send(savedItinerary);
             }
@@ -72,8 +84,8 @@ class ItineraryController {
             const { user } = request;
             if (user) {
                 const results = yield this.itineraryRepository.delete(itineraryIDFromRequest);
-                if (results.raw[1]) {
-                    response.send(results);
+                if (results.affected && results.affected > 0) {
+                    response.send({ id: itineraryIDFromRequest });
                 }
                 else {
                     next(new Middleware_1.DeleteItineraryUnsuccessfulException());
