@@ -5,7 +5,7 @@ import { WrongAuthenticationTokenException, AuthenticationTokenMissingException 
 import { IRequestWithUser, IDataStoredInToken } from '../Types'
 // import { userModel } from '../Models'
 import { getRepository } from 'typeorm';
-import { UserEntity } from '../Entities/User.entity';
+import { UserEntity } from '../Entities';
 
 
 export async function authMiddleware(request: IRequestWithUser, response: Response, next: NextFunction) {

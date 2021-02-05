@@ -15,11 +15,11 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const errorHandling_1 = require("./errorHandling");
 // import { userModel } from '../Models'
 const typeorm_1 = require("typeorm");
-const User_entity_1 = require("../Entities/User.entity");
+const Entities_1 = require("../Entities");
 function authMiddleware(request, response, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const token = request.headers["x-access-token"];
-        const userRepository = typeorm_1.getRepository(User_entity_1.UserEntity);
+        const userRepository = typeorm_1.getRepository(Entities_1.UserEntity);
         if (token) {
             const secret = process.env.JWT_SECRET;
             try {

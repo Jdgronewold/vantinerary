@@ -2,7 +2,7 @@ import * as express from 'express';
 import { IController, INote, IRequestWithUser } from '../Types'
 import { authMiddleware, DeleteNoteUnsuccessfulException, EditNoteUnsuccessfulException } from '../Middleware'
 import { getRepository } from 'typeorm';
-import { NoteEntity } from '../Entities/Note.entity';
+import { NoteEntity } from '../Entities';
 
 export class NotesController implements IController {
     public path = '/notes'

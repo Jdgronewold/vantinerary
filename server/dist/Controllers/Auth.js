@@ -24,12 +24,12 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const Middleware_1 = require("../Middleware");
 const express_validator_1 = require("express-validator");
 const typeorm_1 = require("typeorm");
-const User_entity_1 = require("../Entities/User.entity");
+const Entities_1 = require("../Entities");
 class AuthController {
     constructor() {
         this.path = '/auth';
         this.router = express_1.default.Router();
-        this.userRepository = typeorm_1.getRepository(User_entity_1.UserEntity);
+        this.userRepository = typeorm_1.getRepository(Entities_1.UserEntity);
         this.registration = (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const errors = express_validator_1.validationResult(request);
             if (!errors.isEmpty()) {

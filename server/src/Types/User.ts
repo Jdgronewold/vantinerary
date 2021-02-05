@@ -1,4 +1,4 @@
-import { UserEntity } from 'Entities/User.entity';
+import { UserEntity } from '../Entities';
 import { Request } from 'express';
 // import mongoose from 'mongoose'
 

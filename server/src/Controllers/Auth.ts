@@ -5,7 +5,7 @@ import { IController, IUser, ILogin, IDataStoredInToken, ITokenData } from '../T
 import { EmailOrPasswordNotSufficient, UserWithThatEmailAlreadyExistsException, WrongCredentialsException } from '../Middleware'
 import { check, validationResult } from 'express-validator'
 import { getRepository } from 'typeorm'
-import { UserEntity } from '../Entities/User.entity'
+import { UserEntity } from '../Entities'
 
 export class AuthController implements IController {
     public path = '/auth'

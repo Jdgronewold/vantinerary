@@ -18,12 +18,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const Middleware_1 = require("../Middleware");
 const typeorm_1 = require("typeorm");
-const Note_entity_1 = require("../Entities/Note.entity");
+const Entities_1 = require("../Entities");
 class NotesController {
     constructor() {
         this.path = '/notes';
         this.router = express.Router();
-        this.notesRepository = typeorm_1.getRepository(Note_entity_1.NoteEntity);
+        this.notesRepository = typeorm_1.getRepository(Entities_1.NoteEntity);
         this.getAllNotes = (request, response) => __awaiter(this, void 0, void 0, function* () {
             if (request.user) {
                 // constrain this to reasonable dates at some point
