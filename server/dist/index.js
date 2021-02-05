@@ -10,11 +10,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const App_1 = __importDefault(require("./App"));
 const Controllers_1 = require("./Controllers");
 const dotenv_1 = __importDefault(require("dotenv"));
+require("reflect-metadata");
 dotenv_1.default.config();
 const app = new App_1.default([
-    new Controllers_1.AuthController(),
-    new Controllers_1.NotesController(),
-    new Controllers_1.ItineraryController()
+    Controllers_1.NotesController,
+    Controllers_1.ItineraryController,
+    Controllers_1.AuthController,
 ], 5000);
 app.listen();
 //# sourceMappingURL=index.js.map

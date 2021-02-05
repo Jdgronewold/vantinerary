@@ -10,7 +10,7 @@ export interface INote {
   location?: string,
   showOnCalendar?: boolean,
   tag?: any,
-  _id?: string
+  id?: string
 }
 
 export interface NotesState {
@@ -42,7 +42,7 @@ function notesReducer(state: NotesState, action: NotesActions): NotesState {
       return { notes, currentNote:  null }
     }
     case NotesActionTypes.DELETE_NOTE: {
-      const noteIndex = state.notes.findIndex((note: INote) => note._id = action.payload._id )
+      const noteIndex = state.notes.findIndex((note: INote) => note.id = action.payload.id )
       const newNotes = state.notes.slice()
       newNotes.splice(noteIndex, 1)
       return { notes: newNotes, currentNote:  null }
@@ -54,9 +54,10 @@ function notesReducer(state: NotesState, action: NotesActions): NotesState {
       }
     }
     case NotesActionTypes.EDIT_NOTE: {
-      const noteIndex = state.notes.findIndex((note: INote) => note._id = action.payload._id )
+      const noteIndex = state.notes.findIndex((note: INote) => note.id === action.payload.id )
       const newNotes = state.notes.slice()
       newNotes.splice(noteIndex, 1, action.payload)
+      
       return { notes: newNotes, currentNote:  action.payload }
     }
     default:

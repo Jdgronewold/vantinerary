@@ -2,7 +2,7 @@ import React, { useReducer, useState, useEffect } from 'react'
 import { ItineraryActions, ItineraryActionTypes } from '../actions'
 
 export interface Itinerary {
-  _id?: string,
+  id?: string,
   authorId?: string,
   tripLegs: TripLeg[],
   title: string,
@@ -62,7 +62,7 @@ function itineraryReducer(state: ItineraryState, action: ItineraryActions): Itin
       }
     }
     case ItineraryActionTypes.DELETE_ITINERARY: {
-      const itineraryIndex = state.itineraries.findIndex((itinerary) => itinerary._id === action.payload)
+      const itineraryIndex = state.itineraries.findIndex((itinerary) => itinerary.id === action.payload)
       const newItineraries = state.itineraries.slice()
       newItineraries.splice(itineraryIndex, 1)
       return {
@@ -72,7 +72,7 @@ function itineraryReducer(state: ItineraryState, action: ItineraryActions): Itin
       }
     }
     case ItineraryActionTypes.EDIT_ITINERARY: {
-      const itineraryIndex = state.itineraries.findIndex((itinerary) => itinerary._id === action.payload._id)
+      const itineraryIndex = state.itineraries.findIndex((itinerary) => itinerary.id === action.payload.id)
       const newItineraries = state.itineraries.slice()
       newItineraries.splice(itineraryIndex, 1, action.payload)
       return {

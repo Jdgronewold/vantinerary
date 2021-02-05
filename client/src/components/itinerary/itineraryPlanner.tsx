@@ -33,8 +33,8 @@ export const ItineraryPlanner = () => {
   }
 
   const onDelete = (itineraryId: string) => {
-    deleteItinerary(itineraryId).then((itinerary: Itinerary) => {
-      itineraryDispatch(removeItinerary(itinerary._id))
+    deleteItinerary(itineraryId).then((response: { id: number }) => {
+      itineraryDispatch(removeItinerary(response.id.toString()))
     })
   }
 
@@ -61,19 +61,19 @@ export const ItineraryPlanner = () => {
         </ListItem>
         {
           itineraries.map((itinerary) => (
-            <div  key={itinerary._id}>
+            <div  key={itinerary.id}>
               <ListItem button divider onClick={onSelect(itinerary)}>
                 <ListItemIcon>
                   <EditIcon />
                 </ListItemIcon>
                 <ListItemText primary={itinerary.title} />
               </ListItem>
-              <Collapse in={currentItinerary?._id === itinerary?._id}>
+              <Collapse in={currentItinerary?.id === itinerary?.id}>
                 <List component="div" disablePadding>
                   <ListItem button className={classes.nested} onClick={onEdit}>
                     <ListItemText primary='Edit' />
                   </ListItem>
-                  <ListItem button className={classes.nested} onClick={() => onDelete(itinerary._id)}>
+                  <ListItem button className={classes.nested} onClick={() => onDelete(itinerary.id)}>
                     <ListItemText primary='Delete' />
                   </ListItem>
                 </List>

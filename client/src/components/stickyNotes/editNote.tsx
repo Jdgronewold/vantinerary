@@ -58,6 +58,14 @@ export const EditNote: React.FC<RouteProps> = (props) => {
 
   const saveForm = (noteData: NoteData) => {
     const newDate = new Date(noteData.date)
+
+    console.log(currentNote.date.toString());
+    console.log(newDate.toString());
+    
+    if (currentNote.date.toString() !== newDate.toString()) {
+      newDate.setUTCHours(12)
+    }
+
     const note = createNote({
       ...currentNote,
       ...noteData,

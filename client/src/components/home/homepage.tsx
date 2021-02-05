@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MainCalendarPage = () => {
   const classes = useStyles()
-  const { currentNote, notesDispatch } = useContext(NoteContext)
+  const { currentNote } = useContext(NoteContext)
 
   return (
     <>

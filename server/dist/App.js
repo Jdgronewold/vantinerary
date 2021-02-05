@@ -12,41 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const compression_1 = __importDefault(require("compression"));
 const Middleware_1 = require("./Middleware");
-const Utils_1 = require("./Utils");
-const options = {
-    reconnectTries: 30,
-    reconnectInterval: 500,
-    poolSize: 10,
-    // If not connected, return errors immediately rather than waiting for reconnect
-    bufferMaxEntries: 0,
-    useNewUrlParser: true
-};
-const connectWithRetry = () => {
-    console.log('MongoDB connection with retry');
-    mongoose_1.default.connect('mongodb://mongo:27017/api', options).then(() => __awaiter(this, void 0, void 0, function* () {
-        console.log('MongoDB is connected');
-        console.log(process.env.NODE_ENV);
-        if (process.env.NODE_ENV === 'development') {
-            yield Utils_1.saveMockUser();
-        }
-    })).catch(err => {
-        console.log('MongoDB connection unsuccessful, retry after 5 seconds.');
-        setTimeout(connectWithRetry, 5000);
-    });
-};
+const typeorm_1 = require("typeorm");
+const ormconfig_1 = require("./ormconfig");
 class App {
     constructor(controllers, port) {
         this.app = express_1.default();
         this.port = port;
-        this.initializeMiddlewares();
-        this.initializeControllers(controllers);
-        this.connectToDatabase();
-        this.initializeErrorHandling();
+        const initialize = () => __awaiter(this, void 0, void 0, function* () {
+            this.initializeMiddlewares();
+            yield this.connectToDatabase();
+            this.initializeControllers(controllers);
+            this.initializeErrorHandling();
+        });
+        initialize();
     }
     initializeMiddlewares() {
         this.app.use(cors_1.default({ credentials: true, origin: true }));
@@ -56,14 +38,24 @@ class App {
     }
     initializeControllers(controllers) {
         controllers.forEach((controller) => {
-            this.app.use('/', controller.router);
+            const initializeController = new controller();
+            this.app.use('/', initializeController.router);
         });
     }
     initializeErrorHandling() {
         this.app.use(Middleware_1.errorMiddleware);
     }
     connectToDatabase() {
-        connectWithRetry();
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log(ormconfig_1.config);
+                yield typeorm_1.createConnection(ormconfig_1.config);
+            }
+            catch (error) {
+                console.log('Error while connecting to the database', error);
+                return error;
+            }
+        });
     }
     listen() {
         this.app.listen(this.port, () => {

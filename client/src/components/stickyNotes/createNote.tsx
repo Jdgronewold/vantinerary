@@ -54,10 +54,12 @@ export const CreateNote: React.FC<RouteProps> = (props) => {
   const defaultDate = location.state?.date ? new Date(location.state.date) : new Date()  
 
   const saveForm = (noteData: NoteData) => {
-  
+    const newDate = new Date(noteData.date)
+    newDate.setUTCHours(12)
+    
     const note = createNote({
       ...noteData,
-      date: defaultDate,
+      date: newDate
     })
 
     saveNote(note).then((value: INote) => {

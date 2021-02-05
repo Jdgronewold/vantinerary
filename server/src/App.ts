@@ -1,48 +1,31 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from "cors";
 import parser from "body-parser";
 import compression from "compression";
 
 import { IController } from './Types'
 import { errorMiddleware } from './Middleware'
-import { saveMockUser } from './Utils'
-
-const options = {
-  reconnectTries: 30, // Retry up to 30 times
-  reconnectInterval: 500, // Reconnect every 500ms
-  poolSize: 10, // Maintain up to 10 socket connections
-  // If not connected, return errors immediately rather than waiting for reconnect
-  bufferMaxEntries: 0,
-  useNewUrlParser: true 
-}
-
-const connectWithRetry = () => {
-  console.log('MongoDB connection with retry')
-  mongoose.connect('mongodb://mongo:27017/api', options).then(async ()=>{
-    console.log('MongoDB is connected')
-    console.log(process.env.NODE_ENV);
-    if (process.env.NODE_ENV === 'development') {
-      await saveMockUser()
-    }
-  }).catch(err=>{
-    console.log('MongoDB connection unsuccessful, retry after 5 seconds.')
-    setTimeout(connectWithRetry, 5000)
-  })
-}
+import { createConnection } from 'typeorm';
+import { config } from './ormconfig'
  
 class App {
   public app: express.Application;
   public port: number;
  
-  constructor(controllers: IController[], port: number) {
+  constructor(controllers: { new(): IController}[], port: number) {
     this.app = express();
     this.port = port;
+
+    const initialize = async () => {
  
-    this.initializeMiddlewares();
-    this.initializeControllers(controllers);
-    this.connectToDatabase()
-    this.initializeErrorHandling()
+      this.initializeMiddlewares();
+      await this.connectToDatabase()
+      this.initializeControllers(controllers);
+      this.initializeErrorHandling()
+    }
+
+    initialize()
+
   }
  
   private initializeMiddlewares() {
@@ -52,9 +35,10 @@ class App {
     this.app.use(compression());
   }
  
-  private initializeControllers(controllers: IController[]) {
+  private initializeControllers(controllers: { new(): IController}[]) {
     controllers.forEach((controller) => {
-      this.app.use('/', controller.router);
+      const initializeController = new controller()
+      this.app.use('/', initializeController.router);
     });
   }
 
@@ -62,8 +46,16 @@ class App {
     this.app.use(errorMiddleware);
   }
 
-  private connectToDatabase() {
-    connectWithRetry()
+  private async connectToDatabase() {
+    try {
+      console.log(config)
+      
+      await createConnection(config)
+    }
+    catch (error) {
+      console.log('Error while connecting to the database', error);
+      return error;
+    }
   }
  
   public listen() {

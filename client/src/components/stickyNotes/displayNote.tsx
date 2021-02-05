@@ -48,7 +48,7 @@ export const DisplayNote: React.FC<{}> = () => {
   };
 
   const handleDelete = () => {
-    deleteNote(currentNote._id).then(() => {
+    deleteNote(currentNote.id).then(() => {
       notesDispatch(deleteNoteAction(currentNote))
     })
     setAnchorEl(null)

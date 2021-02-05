@@ -20,16 +20,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt = __importStar(require("bcryptjs"));
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const Models_1 = require("../Models");
 const Middleware_1 = require("../Middleware");
 const express_validator_1 = require("express-validator");
+const typeorm_1 = require("typeorm");
+const Entities_1 = require("../Entities");
 class AuthController {
     constructor() {
         this.path = '/auth';
         this.router = express_1.default.Router();
-        this.user = Models_1.userModel;
+        this.userRepository = typeorm_1.getRepository(Entities_1.UserEntity);
         this.registration = (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const errors = express_validator_1.validationResult(request);
             if (!errors.isEmpty()) {
@@ -37,16 +37,18 @@ class AuthController {
                 return;
             }
             const userData = request.body;
-            if (yield this.user.findOne({ email: userData.email })) {
+            const userExists = yield this.userRepository.find({ email: userData.email });
+            if (userExists.length) {
                 next(new Middleware_1.UserWithThatEmailAlreadyExistsException(userData.email));
             }
             else {
                 try {
                     const hashedPassword = yield bcrypt.hash(userData.password, 10);
-                    const user = yield this.user.create(Object.assign({}, userData, { password: hashedPassword, friends: [], noteIds: [], tripDiaryId: '', _id: new mongoose_1.default.Types.ObjectId() }));
-                    const tokenData = this.createToken(user);
-                    console.log(tokenData);
-                    response.send({ tokenData, user: Object.assign({}, user.toObject(), { password: '' }) });
+                    console.log(userData);
+                    const user = this.userRepository.create(Object.assign({}, userData, { password: hashedPassword }));
+                    const results = yield this.userRepository.save(user);
+                    const tokenData = this.createToken(results);
+                    response.send({ tokenData, user: Object.assign({}, results, { password: '' }) });
                 }
                 catch (error) {
                     next(error);
@@ -55,13 +57,13 @@ class AuthController {
         });
         this.loggingIn = (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const logInData = request.body;
-            const user = yield this.user.findOne({ email: logInData.email });
+            const user = yield this.userRepository.findOne({ email: logInData.email });
             if (user) {
                 const isPasswordMatching = yield bcrypt.compare(logInData.password, user.password);
                 if (isPasswordMatching) {
                     const tokenData = this.createToken(user);
                     console.log('TOKEN_LOGIN', tokenData.token);
-                    response.send({ tokenData, user: Object.assign({}, user.toObject(), { password: '' }) });
+                    response.send({ tokenData, user: Object.assign({}, user, { password: '' }) });
                 }
                 else {
                     next(new Middleware_1.WrongCredentialsException());
@@ -92,7 +94,7 @@ class AuthController {
     createToken(user, expiresIn = 60 * 60 * 60) {
         const secret = process.env.JWT_SECRET;
         const dataStoredInToken = {
-            _id: user._id,
+            id: user.id ? user.id : '',
         };
         return {
             expiresIn,

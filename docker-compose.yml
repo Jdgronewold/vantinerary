@@ -1,13 +1,22 @@
 version: '3'
 services:
-  mongo:
-    restart: always
-    image: mongo:latest
+  postgres:
+    image: 'postgres:latest'
+    env_file:
+      - docker.env
     ports:
-      - "27017:27017"
-    depends_on:
-      - 'api'
-      - 'client'
+      - "5432:5432"
+  # pgadmin:
+  #   links:
+  #     - postgres:postgres
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4
+  #   ports:
+  #     - "8080:80"
+  #   env_file:
+  #     - docker.env
+  #   networks:
+  #     - postgres
   nginx:
     restart: always
     build:
@@ -27,6 +36,13 @@ services:
       - ./server:/app
     environment:
       - NODE_ENV=development
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+    depends_on:
+      - 'postgres'
   client:
     build:
       dockerfile: Dockerfile.dev

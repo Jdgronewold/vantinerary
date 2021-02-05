@@ -13,16 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const errorHandling_1 = require("./errorHandling");
-const Models_1 = require("../Models");
+// import { userModel } from '../Models'
+const typeorm_1 = require("typeorm");
+const Entities_1 = require("../Entities");
 function authMiddleware(request, response, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const token = request.headers["x-access-token"];
+        const userRepository = typeorm_1.getRepository(Entities_1.UserEntity);
         if (token) {
             const secret = process.env.JWT_SECRET;
             try {
                 const verificationResponse = jsonwebtoken_1.default.verify(token, secret);
-                const id = verificationResponse._id;
-                const user = yield Models_1.userModel.findById(id);
+                const id = verificationResponse.id;
+                const user = yield userRepository.findOne(id);
                 if (user) {
                     request.user = user;
                     next();
