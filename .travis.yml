@@ -19,15 +19,14 @@ after_success:
   - docker push jdgronewold/vantinerary-nginx
   - docker push jdgronewold/vantinerary-server
 
-# deploy:
-#   provider: elasticbeanstalk
-#   region: us-west-1
-#   app: vantinerary
-#   env: Vantinerary-env
-#   bucket_name: elasticbeanstalk-us-west-1-306476627547
-#   bucket_path: docker-multi
-#   on:
-#     branch: master
-#   access_key_id: $AWS_ACCESS_KEY
-#   secret_access_key:
-#     secure: $AWS_SECRET_KEY
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: Vantinerary
+  env: Vantinerary-env
+  bucket_name: elasticbeanstalk-us-east-1-975414870563
+  bucket_path: vantinerary-bucket
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
