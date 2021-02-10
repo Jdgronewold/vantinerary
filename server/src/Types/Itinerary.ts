@@ -1,4 +1,4 @@
-import { UserEntity } from "Entities";
+import { UserEntity } from "../Entities";
 
 export interface Itinerary {
   id: string,
