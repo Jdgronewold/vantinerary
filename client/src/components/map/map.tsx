@@ -39,6 +39,7 @@ interface MapProps {
 }
 
 const gmapKey = process.env.REACT_APP_GOOGLE_MAPS_KEY
+console.log(process.env);
 
 export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, shouldShowPlanner = false, updateContext }) => {
   const [mapIsLoaded, setMapLoaded] = useState(false)
