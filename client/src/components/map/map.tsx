@@ -120,7 +120,7 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
     }
 
   }, [mapIsLoaded, itinerary])
-
+  console.log(process.env.REACT_APP_GOOGLE_MAPS_KEY)
   return (
     <div className={classes.mapRoot}>
       <GoogleMapReact

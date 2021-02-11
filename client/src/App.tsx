@@ -12,6 +12,7 @@ import { HomePage } from './components/home/homepage';
 import './App.scss';
 
 function App() {
+  console.log(process.env.PUBLIC_URL)
   return (
     <div className="App">
       <StateManager>
