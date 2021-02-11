@@ -38,7 +38,7 @@ interface MapProps {
   updateContext?: (map: google.maps.Map, mapApi: any) => void
 }
 
-
+const gmapKey = process.env.REACT_APP_GOOGLE_MAPS_KEY
 
 export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, shouldShowPlanner = false, updateContext }) => {
   const [mapIsLoaded, setMapLoaded] = useState(false)
@@ -120,13 +120,13 @@ export const Map: React.FC<MapProps> = ({ itinerary, shouldAllowSearch = false, 
     }
 
   }, [mapIsLoaded, itinerary])
-  console.log(process.env.REACT_APP_GOOGLE_MAPS_KEY)
+  console.log(gmapKey)
   return (
     <div className={classes.mapRoot}>
       <GoogleMapReact
           defaultZoom={10}
           bootstrapURLKeys={{
-            key: process.env.REACT_APP_GOOGLE_MAPS_KEY,
+            key: gmapKey,
             libraries: ['places', 'geometry']
           }}
           defaultCenter={{ lat: 40.0150, lng: -105.2705}}
