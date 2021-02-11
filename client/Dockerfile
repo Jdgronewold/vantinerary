@@ -1,5 +1,6 @@
 FROM node:12 as builder
 WORKDIR '/app'
+ENV REACT_APP_GOOGLE_MAPS_KEY=$REACT_APP_GOOGLE_MAPS_KEY
 COPY ./package.json ./
 RUN npm install
 COPY . .

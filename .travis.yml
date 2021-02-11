@@ -2,11 +2,11 @@ sudo: required
 services:
   - docker
 
-before_install:
-  - docker build -t jdgronewold/react-test -f ./client/Dockerfile.dev ./client
+# before_install:
+#   - docker build -t jdgronewold/react-test -f ./client/Dockerfile.dev ./client
 
-script:
-- docker run -e CI=true jdgronewold/react-test npm test -- --watchAll=false
+# script:
+# - docker run -e CI=true jdgronewold/react-test npm test -- --watchAll=false
 
 after_success:
   - docker build -t jdgronewold/vantinerary-client ./client --build-arg REACT_APP_GOOGLE_MAPS_KEY=$REACT_APP_GOOGLE_MAPS_KEY
