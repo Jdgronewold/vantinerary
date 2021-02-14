@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import axios from 'axios'
 
-axios.defaults.baseURL = process.env.PUBLIC_URL || 'http://localhost:3050'; // configure later
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL || 'http://localhost:3050'; // configure later
 
 ReactDOM.render(
   // <React.StrictMode>

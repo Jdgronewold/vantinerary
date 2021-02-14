@@ -9,7 +9,7 @@ script:
 - docker run -e CI=true jdgronewold/react-test npm test -- --watchAll=false
 
 after_success:
-  - docker build -t jdgronewold/vantinerary-client ./client --build-arg REACT_APP_GOOGLE_MAPS_KEY=$REACT_APP_GOOGLE_MAPS_KEY
+  - docker build -t jdgronewold/vantinerary-client ./client --build-arg REACT_APP_GOOGLE_MAPS_KEY=$REACT_APP_GOOGLE_MAPS_KEY --build-arg REACT_APP_BASE_URL=$REACT_APP_BASE_URL
   - docker build -t jdgronewold/vantinerary-nginx ./nginx
   - docker build -t jdgronewold/vantinerary-server ./server
   # Log in to the docker CLI
